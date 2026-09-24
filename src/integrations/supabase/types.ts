@@ -14,21 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      _storage_bootstrap: {
-        Row: {
-          part: number
-          sql: string
-        }
-        Insert: {
-          part: number
-          sql: string
-        }
-        Update: {
-          part?: number
-          sql?: string
-        }
-        Relationships: []
-      }
       absensi_asn: {
         Row: {
           catatan: string | null
@@ -6577,6 +6562,10 @@ export type Database = {
       }
       check_signed_document_status: { Args: { _id: string }; Returns: string }
       count_permohonan_bulan_ini: { Args: never; Returns: number }
+      dashboard_summary: {
+        Args: { _days?: number; _opd?: string }
+        Returns: Json
+      }
       derive_system_position_from_jabatan: {
         Args: { _kategori?: string; _kode: string; _nama: string }
         Returns: string
