@@ -221,11 +221,19 @@ function AbsensiPage() {
     }
   }
 
-  async function submit(token: string) {
+  async function submit(token: string | null) {
     if (busy) return;
     if (!coords) {
       toast.error("GPS wajib aktif untuk absen.");
       requestGps();
+      return;
+    }
+    if (mode === "wfa" && !face?.wfa) {
+      toast.error("Belum ada penugasan luar kantor yang aktif hari ini. Hubungi Admin OPD.");
+      return;
+    }
+    if (mode === "wfa" && !face?.enrolled) {
+      toast.error("Absen dari luar kantor memerlukan rekaman wajah. Temui Admin OPD.");
       return;
     }
     setBusy(true);
@@ -248,6 +256,7 @@ function AbsensiPage() {
       await submitAbsensi({
         data: {
           token,
+          mode,
           tipe,
           lat: coords.lat,
           lng: coords.lng,
