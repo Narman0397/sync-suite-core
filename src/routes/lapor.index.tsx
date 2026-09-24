@@ -62,7 +62,7 @@ function LaporIndex() {
         title="Lacak status laporan Anda."
         description="Setiap laporan yang masuk mendapat nomor tiket unik. Gunakan nomor tersebut untuk memantau tindak lanjut."
       />
-       <section className="container-page py-12 md:py-16">
+       <section className="container-page py-10 md:py-12">
          <div className="mx-auto grid max-w-5xl gap-8 lg:grid-cols-[1fr_1.05fr] lg:items-start">
            <div>
              <div className="public-section-kicker">Alur tindak lanjut</div>

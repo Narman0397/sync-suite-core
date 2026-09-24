@@ -196,7 +196,7 @@ function HomePage() {
     <PageShell>
       {/* HERO */}
       <section
-        className="home-hero relative min-h-[34rem] overflow-hidden bg-public-hero text-primary-foreground md:min-h-[38rem]"
+        className="home-hero relative min-h-[26rem] overflow-hidden bg-public-hero text-primary-foreground md:min-h-[28rem]"
         style={{ contain: "paint" }}
       >
         {branding.hero_bg_url ? (
@@ -226,7 +226,7 @@ function HomePage() {
           className="absolute inset-0 bg-gradient-to-r from-public-hero via-public-hero/85 to-public-hero/30"
           aria-hidden
         />
-        <div className="container-page relative grid min-h-[34rem] content-center gap-10 py-12 md:min-h-[38rem] md:py-16 lg:grid-cols-12 lg:items-center lg:gap-12">
+        <div className="container-page relative grid min-h-[26rem] content-center gap-6 py-10 md:min-h-[28rem] md:py-12 lg:grid-cols-12 lg:items-center lg:gap-8">
           <div className="lg:col-span-7">
             <span className="inline-flex items-center gap-2 border-l-2 border-public-highlight pl-3 text-xs font-semibold uppercase tracking-wider text-primary-foreground/85">
               <ShieldCheck className="h-3.5 w-3.5" /> {branding.hero_eyebrow}
@@ -289,7 +289,7 @@ function HomePage() {
 
       {/* DIREKTORI OPD */}
       {showOpdDir && (
-         <section className="container-page py-14 md:py-16">
+         <section className="container-page py-10 md:py-12">
           <div className="flex items-end justify-between gap-4">
             <div>
                <div className="public-section-kicker">
@@ -322,7 +322,7 @@ function HomePage() {
       )}
 
       {/* PILAR */}
-       <section className="border-y border-border bg-surface py-14">
+       <section className="border-y border-border bg-surface py-10 md:py-12">
         <div className="container-page grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {[
             { icon: Database, title: branding.pilar_1_title, desc: branding.pilar_1_desc },
@@ -341,7 +341,7 @@ function HomePage() {
       </section>
 
       {/* CTA */}
-       <section className="container-page py-14">
+       <section className="container-page py-10 md:py-12">
          <div className="overflow-hidden rounded-md border-l-4 border-public-highlight bg-public-hero p-6 text-primary-foreground shadow-elevated md:p-10">
           <div className="grid items-center gap-6 md:grid-cols-2">
             <div>
