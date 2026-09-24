@@ -318,6 +318,11 @@ export const submitAbsensi = createServerFn({ method: "POST" })
     // Hash fingerprint client (sudah di-hash di sisi client) — server simpan apa adanya (max 200)
     const fpHash = data.device_fingerprint?.slice(0, 200) ?? null;
 
+    const { FOTO_RETENTION_DAYS } = await import("@/lib/asn-face.server");
+    const fotoExpiresAt = new Date(
+      Date.now() + FOTO_RETENTION_DAYS * 86_400_000,
+    ).toISOString();
+
     const { error: insErr } = await supabaseAdmin.from("absensi_asn").insert({
       user_id: userId,
       opd_id: qr.opd_id,
@@ -332,6 +337,11 @@ export const submitAbsensi = createServerFn({ method: "POST" })
       schedule_id: scheduleId,
       biometric_verified: !!biometricCredentialId,
       biometric_credential_id: biometricCredentialId,
+      mode: isWfa ? "wfa" : "qr",
+      wfa_reason: wfaReason,
+      face_verified: face.enrolled ? face.verified : false,
+      face_score: face.score,
+      foto_expires_at: fotoExpiresAt,
     });
     if (insErr) throw new Error(insErr.message);
     return {
@@ -340,6 +350,9 @@ export const submitAbsensi = createServerFn({ method: "POST" })
       late_minutes: lateMin,
       sumber_jadwal: sumberJadwal,
       biometric_verified: !!biometricCredentialId,
+      mode: isWfa ? "wfa" : "qr",
+      face_verified: face.enrolled ? face.verified : false,
+      face_score: face.score,
     };
   });
 
@@ -349,7 +362,9 @@ export const listAbsensiSelf = createServerFn({ method: "POST" })
   .handler(async ({ context }) => {
     const { data, error } = await supabaseAdmin
       .from("absensi_asn")
-      .select("id,tipe,waktu,opd:opd!opd_id(nama,singkatan)")
+      .select(
+        "id,tipe,waktu,mode,wfa_reason,face_verified,biometric_verified,opd:opd!opd_id(nama,singkatan)",
+      )
       .eq("user_id", context.userId)
       .order("waktu", { ascending: false })
       .limit(60);
