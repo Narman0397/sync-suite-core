@@ -513,6 +513,19 @@ function AbsensiPage() {
                     >
                       {r.tipe.toUpperCase()}
                     </span>
+                    <span className="ml-2 inline-block rounded bg-muted px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                      {r.mode === "wfa" ? "LUAR KANTOR" : "DI KANTOR"}
+                    </span>
+                    {r.face_verified && (
+                      <span className="ml-1 inline-block rounded bg-success/15 px-1.5 py-0.5 text-[10px] font-semibold text-success">
+                        WAJAH
+                      </span>
+                    )}
+                    {r.biometric_verified && (
+                      <span className="ml-1 inline-block rounded bg-success/15 px-1.5 py-0.5 text-[10px] font-semibold text-success">
+                        SIDIK JARI
+                      </span>
+                    )}
                     <span className="ml-2 text-muted-foreground">{r.opd?.singkatan ?? ""}</span>
                   </div>
                   <div className="text-xs text-muted-foreground">
