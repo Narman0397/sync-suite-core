@@ -362,7 +362,9 @@ export const listAbsensiSelf = createServerFn({ method: "POST" })
   .handler(async ({ context }) => {
     const { data, error } = await supabaseAdmin
       .from("absensi_asn")
-      .select("id,tipe,waktu,opd:opd!opd_id(nama,singkatan)")
+      .select(
+        "id,tipe,waktu,mode,wfa_reason,face_verified,biometric_verified,opd:opd!opd_id(nama,singkatan)",
+      )
       .eq("user_id", context.userId)
       .order("waktu", { ascending: false })
       .limit(60);
