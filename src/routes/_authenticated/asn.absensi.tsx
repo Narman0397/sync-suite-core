@@ -8,6 +8,7 @@ import { submitAbsensi, listAbsensiSelf } from "@/lib/asn.functions";
 import { resolveMySchedule } from "@/lib/asn-advanced.functions";
 import { startAuthentication } from "@simplewebauthn/browser";
 import { startBiometricAssertion } from "@/lib/asn-biometric.functions";
+import { myFaceStatus } from "@/lib/asn-face.functions";
 import { BiometricEnrollCard, useBiometricStatus } from "@/components/asn/BiometricEnrollCard";
 
 export const Route = createFileRoute("/_authenticated/asn/absensi")({
