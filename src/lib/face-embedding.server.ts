@@ -5,10 +5,17 @@
 import jpeg from "jpeg-js";
 
 export const FACE_DIM = 192;
-/** Ambang minimal kecocokan wajah agar absensi diterima. */
+/** Ambang bawaan kecocokan wajah (dapat diubah Super Admin lewat pengaturan). */
 export const FACE_MATCH_THRESHOLD = 0.78;
-/** Ambang keyakinan tinggi — template diperbarui bertahap (EMA). */
-export const FACE_ADAPT_THRESHOLD = 0.88;
+/** Selisih di atas ambang agar template diperbarui bertahap (EMA). */
+export const FACE_ADAPT_MARGIN = 0.1;
+/** Rentang ambang yang boleh diatur. */
+export const FACE_THRESHOLD_MIN = 0.6;
+export const FACE_THRESHOLD_MAX = 0.95;
+/** Toleransi fusi kontekstual (GPS kantor + perangkat tepercaya). */
+export const FACE_FUSION_MARGIN = 0.04;
+/** Skor keaslian minimal (selisih kecerahan saat layar berkedip). */
+export const LIVENESS_MIN = 1.5;
 /** Bobot sampel baru saat penyesuaian bertahap. */
 export const FACE_ADAPT_ALPHA = 0.1;
 
@@ -67,26 +74,74 @@ export function imageQuality(dataUrl: string): number {
   return Math.round(100 * (0.4 * contrast + 0.35 * exposure + 0.25 * resScore));
 }
 
+/**
+ * Normalisasi kontras lokal (mirip CLAHE ringan): tiap piksel dinormalisasi
+ * terhadap rata-rata & simpangan jendela 9x9 di sekitarnya. Menetralkan
+ * bayangan samping dan perbedaan pencahayaan ruangan.
+ */
+function localContrastNormalize(g: Float64Array, N: number, r = 4): Float64Array {
+  const W = N + 1;
+  const S = new Float64Array(W * W);
+  const S2 = new Float64Array(W * W);
+  for (let y = 0; y < N; y++) {
+    let row = 0;
+    let row2 = 0;
+    for (let x = 0; x < N; x++) {
+      const v = g[y * N + x];
+      row += v;
+      row2 += v * v;
+      S[(y + 1) * W + x + 1] = S[y * W + x + 1] + row;
+      S2[(y + 1) * W + x + 1] = S2[y * W + x + 1] + row2;
+    }
+  }
+  const out = new Float64Array(N * N);
+  for (let y = 0; y < N; y++) {
+    const y0 = Math.max(0, y - r);
+    const y1 = Math.min(N, y + r + 1);
+    for (let x = 0; x < N; x++) {
+      const x0 = Math.max(0, x - r);
+      const x1 = Math.min(N, x + r + 1);
+      const n = (y1 - y0) * (x1 - x0);
+      const sum = S[y1 * W + x1] - S[y0 * W + x1] - S[y1 * W + x0] + S[y0 * W + x0];
+      const sum2 = S2[y1 * W + x1] - S2[y0 * W + x1] - S2[y1 * W + x0] + S2[y0 * W + x0];
+      const mean = sum / n;
+      const std = Math.sqrt(Math.max(0, sum2 / n - mean * mean));
+      out[y * N + x] = (g[y * N + x] - mean) / (std + 0.35);
+    }
+  }
+  return out;
+}
+
+/**
+ * Bobot area wajah: gaussian eliptis berpusat di area mata–hidung–mulut.
+ * Tepi (rambut, hijab, peci, kerah) mendapat bobot kecil karena sering berubah.
+ */
+function interiorWeight(nx: number, ny: number): number {
+  const dx = (nx - 0.5) / 0.3;
+  const dy = (ny - 0.54) / 0.36;
+  return Math.max(0.15, Math.exp(-0.5 * (dx * dx + dy * dy)));
+}
+
 /** Vektor biometrik wajah 192 dimensi (blok intensitas + histogram gradien). */
 export function extractFaceEmbedding(dataUrl: string): number[] {
   const { mime, bin } = decodeDataUrl(dataUrl);
   if (!/jpe?g/.test(mime)) throw new Error("Foto harus berformat JPEG");
   if (bin.byteLength > 2_500_000) throw new Error("Ukuran foto maksimal 2.5 MB");
   const N = 64;
-  const g = toGray64(bin);
+  const g = localContrastNormalize(toGray64(bin), N);
   const v: number[] = [];
 
-  // (a) 64 dimensi: rata-rata intensitas blok 8x8
+  // (a) 64 dimensi: rata-rata intensitas blok 8x8, dibobot area wajah
   for (let by = 0; by < 8; by++) {
     for (let bx = 0; bx < 8; bx++) {
       let s = 0;
       for (let y = 0; y < 8; y++)
         for (let x = 0; x < 8; x++) s += g[(by * 8 + y) * N + (bx * 8 + x)];
-      v.push(s / 64);
+      v.push((s / 64) * interiorWeight((bx + 0.5) / 8, (by + 0.5) / 8));
     }
   }
 
-  // (b) 128 dimensi: histogram orientasi gradien (8 bin) pada grid 4x4 sel 16x16
+  // (b) 128 dimensi: histogram orientasi gradien (8 bin) grid 4x4, dibobot area wajah
   const bins = 8;
   for (let cy = 0; cy < 4; cy++) {
     for (let cx = 0; cx < 4; cx++) {
@@ -105,7 +160,8 @@ export function extractFaceEmbedding(dataUrl: string): number[] {
         }
       }
       const norm = Math.hypot(...hist) || 1;
-      for (const h of hist) v.push(h / norm);
+      const w = interiorWeight((cx + 0.5) / 4, (cy + 0.5) / 4);
+      for (const h of hist) v.push((h / norm) * w);
     }
   }
 
