@@ -3,6 +3,7 @@
 // pemindai, hitung mundur, lalu mengembalikan foto (data URL JPEG) ke pemanggil.
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Loader2, ScanFace, X } from "lucide-react";
+import { captureFaceCrop } from "@/lib/face-crop";
 
 type Phase = "starting" | "ready" | "counting" | "captured" | "verifying" | "error";
 
@@ -68,36 +69,34 @@ export function FaceScanModal({
     };
   }, [open, stop]);
 
-  const grabFrame = useCallback((): string | null => {
+  const grabFrame = useCallback(async (): Promise<string | null> => {
     const video = videoRef.current;
     if (!video) return null;
-    const w = Math.min(640, video.videoWidth || 640);
-    const h = Math.round((video.videoHeight || 480) * (w / (video.videoWidth || 640)));
-    const canvas = document.createElement("canvas");
-    canvas.width = w;
-    canvas.height = h;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return null;
-    ctx.drawImage(video, 0, 0, w, h);
-    return canvas.toDataURL("image/jpeg", 0.8);
+    const res = await captureFaceCrop(video);
+    return res?.dataUrl ?? null;
   }, []);
 
   // Hitung mundur sebelum foto diambil.
   useEffect(() => {
     if (phase !== "counting") return;
     if (count <= 0) {
-      const data = grabFrame();
-      if (!data) {
-        setErr("Gagal mengambil gambar dari kamera.");
-        setPhase("error");
-        return;
-      }
-      setShot(data);
-      setPhase("captured");
-      stop();
-      setPhase("verifying");
-      void onCapture(data);
-      return;
+      let cancelled = false;
+      void (async () => {
+        const data = await grabFrame();
+        if (cancelled) return;
+        if (!data) {
+          setErr("Gagal mengambil gambar dari kamera.");
+          setPhase("error");
+          return;
+        }
+        setShot(data);
+        stop();
+        setPhase("verifying");
+        void onCapture(data);
+      })();
+      return () => {
+        cancelled = true;
+      };
     }
     const t = setTimeout(() => setCount((c) => c - 1), 900);
     return () => clearTimeout(t);
