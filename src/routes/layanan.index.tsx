@@ -23,6 +23,8 @@ export const Route = createFileRoute("/layanan/")({
         property: "og:description",
         content: "Telusuri layanan berdasarkan kategori dan dinas pengelola.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   loader: ({ context: { queryClient } }) => {
@@ -157,7 +159,7 @@ function LayananPage() {
                     key={l.id}
                     to="/layanan/$slug"
                     params={{ slug: l.slug }}
-                    className="group flex gap-4 rounded-xl border border-border bg-card p-5 shadow-soft transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-elevated"
+                    className="public-panel group flex min-h-40 gap-4 border-l-4 border-l-transparent p-5 transition-all hover:-translate-y-0.5 hover:border-l-primary hover:shadow-elevated"
                   >
                     <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors group-hover:bg-primary-soft group-hover:text-primary">
                       <FileText className="h-5 w-5" />

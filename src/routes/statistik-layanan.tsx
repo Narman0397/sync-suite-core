@@ -20,6 +20,8 @@ export const Route = createFileRoute("/statistik-layanan")({
         property: "og:description",
         content: "Data terbuka kinerja pelayanan publik Kabupaten Buton Selatan.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: StatistikPage,

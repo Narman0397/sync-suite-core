@@ -11,7 +11,14 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 
 export const Route = createFileRoute("/ikm/$id")({
-  head: () => ({ meta: [{ title: "Survei IKM — Layanan Publik" }] }),
+  head: () => ({ meta: [
+    { title: "Survei IKM — Layanan Publik" },
+    { name: "description", content: "Survei Kepuasan Masyarakat untuk layanan publik Kabupaten Buton Selatan." },
+    { property: "og:title", content: "Survei Kepuasan Masyarakat" },
+    { property: "og:description", content: "Berikan penilaian Anda terhadap kualitas layanan publik." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: Page,
 });
 
