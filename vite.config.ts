@@ -41,9 +41,9 @@ const REQUIRED_CLIENT_ENV = [
 // situs published memakai backend berbeda dan login gagal ("kredensial sama
 // tidak bisa dipakai di URL published").
 const LOVABLE_CLOUD_CLIENT_ENV: Record<(typeof REQUIRED_CLIENT_ENV)[number], string> = {
-  VITE_SUPABASE_URL: "https://c--8de8077d-be5a-41b6-8e6e-3157468d0459-prod.lovable.cloud",
-  VITE_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_Lz7IBRHRKMAFxu8DnAfLkA_zHkZDsEw",
-  VITE_SUPABASE_PROJECT_ID: "nqoomyimlcmtpgbkicuc",
+  VITE_SUPABASE_URL: "https://c--7c7f4cbb-b346-4f65-ac26-2374020ca793-prod.lovable.cloud",
+  VITE_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_4w4PB9tE0jfgiKtYXNrjkQ_OrAE34-T",
+  VITE_SUPABASE_PROJECT_ID: "cfpfbadtfnxszzrelnxb",
 };
 
 // NODE_ENV selalu "production" untuk `vite build`, termasuk ketika perintahnya
