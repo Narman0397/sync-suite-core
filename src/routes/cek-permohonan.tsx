@@ -65,7 +65,7 @@ function CekPage() {
         title="Cek Status Permohonan"
         description="Lacak permohonan pelayanan publik menggunakan kode + 4 digit terakhir NIK."
       />
-       <section className="container-page py-12 md:py-16">
+       <section className="container-page py-10 md:py-12">
          <div className="mx-auto mb-8 grid max-w-4xl gap-4 sm:grid-cols-3">
            {[
              { icon: FileSearch, title: "Siapkan kode", text: "Gunakan kode yang diterima saat pengajuan." },

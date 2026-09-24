@@ -23,7 +23,7 @@ export function PageHero({
 }) {
   return (
     <section className="public-hero">
-      <div className="container-page py-12 md:py-16">
+      <div className="container-page py-10 md:py-12">
         {eyebrow && (
           <div className="public-eyebrow mb-4">
             {eyebrow}

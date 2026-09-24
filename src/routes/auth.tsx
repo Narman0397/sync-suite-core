@@ -297,7 +297,7 @@ function AuthPage() {
 
   return (
     <PageShell>
-      <section className="container-page py-10 md:py-16">
+      <section className="container-page py-10 md:py-12">
         <div className="mx-auto grid max-w-5xl overflow-hidden rounded-lg border border-border bg-card shadow-elevated lg:grid-cols-[.8fr_1.2fr]">
           <aside className="hidden bg-public-hero p-10 text-primary-foreground lg:block">
             <div className="public-eyebrow">Portal layanan terpadu</div>
