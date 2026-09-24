@@ -318,10 +318,10 @@ function AbsensiPage() {
       <section className="container-page py-8">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="font-display text-2xl font-bold">Absensi ASN (QR Kantor)</h1>
+            <h1 className="font-display text-2xl font-bold">Absensi ASN</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              Pilih tipe absen lalu scan QR. GPS, foto wajah, dan sidik jari perangkat (bila sudah
-              didaftarkan) wajib untuk mencegah titip absen.
+              Pilih lokasi kerja dan tipe absen. GPS, foto wajah, dan sidik jari perangkat (bila
+              sudah didaftarkan) wajib untuk mencegah titip absen.
             </p>
           </div>
           <Link
