@@ -5,7 +5,7 @@
 - [ ] Validasi build, RBAC, desktop, dan mobile
 
 # Penyempurnaan Halaman Publik
-- [ ] Terapkan sistem visual bersama pada navigasi, pembuka halaman, konten, dan footer
-- [ ] Percantik beranda, katalog, halaman informasi, utilitas, dan detail publik
-- [ ] Lengkapi metadata sosial halaman publik
-- [ ] Validasi fungsi serta tampilan desktop dan ponsel
+- [x] Terapkan sistem visual bersama pada navigasi, pembuka halaman, konten, dan footer
+- [x] Percantik beranda, katalog, halaman informasi, utilitas, dan detail publik
+- [x] Lengkapi metadata sosial halaman publik utama
+- [x] Validasi fungsi serta tampilan desktop dan ponsel
