@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
 import { PageShell } from "@/components/site/PageShell";
 import { QrScanner } from "@/components/asn/QrScanner";
+import { QrUpload } from "@/components/asn/QrUpload";
 import { useAuth } from "@/lib/auth-context";
 import { submitAbsensi, listAbsensiSelf } from "@/lib/asn.functions";
 import { resolveMySchedule } from "@/lib/asn-advanced.functions";
@@ -465,7 +466,10 @@ function AbsensiPage() {
                 </button>
               </div>
             ) : !scanned ? (
-              <QrScanner onResult={handleScan} />
+              <div>
+                <QrScanner onResult={handleScan} />
+                <QrUpload onResult={handleScan} />
+              </div>
             ) : (
               <div className="rounded-xl border border-border bg-card p-4">
                 <div className="text-sm">
