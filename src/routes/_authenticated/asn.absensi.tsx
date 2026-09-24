@@ -22,7 +22,24 @@ type Row = {
   id: string;
   tipe: "masuk" | "pulang";
   waktu: string;
+  mode?: string | null;
+  wfa_reason?: string | null;
+  face_verified?: boolean | null;
+  biometric_verified?: boolean | null;
   opd: { nama: string; singkatan: string } | null;
+};
+
+type FaceStatus = {
+  enrolled: boolean;
+  samples: number;
+  min: number;
+  wfa: {
+    id: string;
+    mulai: string;
+    selesai: string;
+    alasan: string | null;
+    nomor_surat: string | null;
+  } | null;
 };
 
 function AbsensiPage() {
@@ -34,6 +51,8 @@ function AbsensiPage() {
   const [scanned, setScanned] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [tipe, setTipe] = useState<"masuk" | "pulang">("masuk");
+  const [mode, setMode] = useState<"wfo" | "wfa">("wfo");
+  const [face, setFace] = useState<FaceStatus | null>(null);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [gpsError, setGpsError] = useState<string | null>(null);
   const [requestingGps, setRequestingGps] = useState(false);
