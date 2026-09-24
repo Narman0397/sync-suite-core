@@ -84,3 +84,13 @@ CREATE POLICY "asn_wfa_assignment_manage" ON public.asn_wfa_assignment
   USING (public.is_admin_pemda(auth.uid()) OR public.has_role(auth.uid(),'admin_opd'::public.app_role))
   WITH CHECK (public.is_admin_pemda(auth.uid()) OR public.has_role(auth.uid(),'admin_opd'::public.app_role));
 NOTIFY pgrst, 'reload schema';
+ALTER TABLE public.absensi_asn
+  ADD COLUMN IF NOT EXISTS mode text NOT NULL DEFAULT 'qr',
+  ADD COLUMN IF NOT EXISTS biometric_verified boolean NOT NULL DEFAULT false,
+  ADD COLUMN IF NOT EXISTS biometric_credential_id text,
+  ADD COLUMN IF NOT EXISTS face_verified boolean NOT NULL DEFAULT false,
+  ADD COLUMN IF NOT EXISTS face_score numeric,
+  ADD COLUMN IF NOT EXISTS foto_deleted_at timestamptz,
+  ADD COLUMN IF NOT EXISTS foto_expires_at timestamptz,
+  ADD COLUMN IF NOT EXISTS wfa_reason text;
+NOTIFY pgrst, 'reload schema';
