@@ -11,6 +11,7 @@ import { startAuthentication } from "@simplewebauthn/browser";
 import { startBiometricAssertion } from "@/lib/asn-biometric.functions";
 import { myFaceStatus } from "@/lib/asn-face.functions";
 import { BiometricEnrollCard, useBiometricStatus } from "@/components/asn/BiometricEnrollCard";
+import { FaceScanModal } from "@/components/asn/FaceScanModal";
 
 export const Route = createFileRoute("/_authenticated/asn/absensi")({
   head: () => ({
@@ -58,6 +59,8 @@ function AbsensiPage() {
   const [gpsError, setGpsError] = useState<string | null>(null);
   const [requestingGps, setRequestingGps] = useState(false);
   const [rows, setRows] = useState<Row[]>([]);
+  const [faceScanOpen, setFaceScanOpen] = useState(false);
+  const [pendingToken, setPendingToken] = useState<string | null>(null);
   const bio = useBiometricStatus();
   const [schedule, setSchedule] = useState<{
     nama: string;
@@ -198,31 +201,8 @@ function AbsensiPage() {
       .join("");
   }
 
-  async function captureFoto(): Promise<string> {
-    // Buka kamera selfie, ambil 1 frame, kembalikan data URL JPEG.
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: "user" },
-      audio: false,
-    });
-    try {
-      const video = document.createElement("video");
-      video.srcObject = stream;
-      await video.play();
-      const w = Math.min(640, video.videoWidth || 640);
-      const h = Math.round((video.videoHeight || 480) * (w / (video.videoWidth || 640)));
-      const canvas = document.createElement("canvas");
-      canvas.width = w;
-      canvas.height = h;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) throw new Error("Canvas tidak tersedia");
-      ctx.drawImage(video, 0, 0, w, h);
-      return canvas.toDataURL("image/jpeg", 0.75);
-    } finally {
-      stream.getTracks().forEach((t) => t.stop());
-    }
-  }
-
-  async function submit(token: string | null) {
+  // Langkah 1: validasi prasyarat lalu buka tampilan pemindaian wajah.
+  function submit(token: string | null) {
     if (busy) return;
     if (!coords) {
       toast.error("GPS wajib aktif untuk absen.");
@@ -237,10 +217,15 @@ function AbsensiPage() {
       toast.error("Absen dari luar kantor memerlukan rekaman wajah. Temui Admin OPD.");
       return;
     }
+    setPendingToken(token);
+    setFaceScanOpen(true);
+  }
+
+  // Langkah 2: foto hasil pemindaian wajah dikirim ke server.
+  async function finalizeAbsensi(token: string | null, foto: string) {
+    if (!coords) return;
     setBusy(true);
     try {
-      toast.info("Mengambil foto…");
-      const foto = await captureFoto();
       const fp = await getDeviceFingerprint();
 
       // Verifikasi sidik jari perangkat bila ASN sudah mendaftarkannya.
@@ -271,9 +256,12 @@ function AbsensiPage() {
         biometric ? `Absen ${tipe} tercatat (terverifikasi sidik jari)` : `Absen ${tipe} tercatat`,
       );
       setScanned(null);
+      setFaceScanOpen(false);
+      setPendingToken(null);
       await reload();
     } catch (e) {
       toast.error((e as Error).message);
+      setFaceScanOpen(false);
     } finally {
       setBusy(false);
     }
@@ -541,6 +529,21 @@ function AbsensiPage() {
           </div>
         </div>
       </section>
+
+      <FaceScanModal
+        open={faceScanOpen}
+        title={`Verifikasi Wajah — Absen ${tipe === "masuk" ? "Masuk" : "Pulang"}`}
+        subtitle={
+          mode === "wfa" ? "Absen dari luar kantor" : "Absen di kantor · wajah direkam untuk bukti"
+        }
+        busy={busy}
+        onCapture={(foto) => finalizeAbsensi(pendingToken, foto)}
+        onCancel={() => {
+          if (busy) return;
+          setFaceScanOpen(false);
+          setPendingToken(null);
+        }}
+      />
     </PageShell>
   );
 }
