@@ -21,6 +21,8 @@ import {
   adminCreateWfa,
   adminDeleteWfa,
 } from "@/lib/asn-face.functions";
+import { FaceThresholdCard } from "@/components/asn/FaceThresholdCard";
+import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/_authenticated/admin/asn-biometrik")({
   head: () => ({
@@ -99,6 +101,7 @@ const TABS = [
 type TabKey = (typeof TABS)[number]["key"];
 
 function Page() {
+  const { isSuperAdmin } = useAuth();
   const [tab, setTab] = useState<TabKey>("wajah");
   const [rows, setRows] = useState<Row[]>([]);
   const [min, setMin] = useState(3);
@@ -269,6 +272,8 @@ function Page() {
           </button>
         ))}
       </div>
+
+      {tab === "wajah" && isSuperAdmin && <FaceThresholdCard />}
 
       <input
         value={q}

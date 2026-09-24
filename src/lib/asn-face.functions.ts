@@ -194,3 +194,46 @@ export const adminDeleteWfa = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+// ============= SUPER ADMIN: AMBANG PENCOCOKAN WAJAH =============
+async function assertSuper(context: Ctx) {
+  const { data } = await context.supabase.rpc("has_role", {
+    _user_id: context.userId,
+    _role: "super_admin",
+  });
+  if (!data) throw new Error("Hanya Super Admin yang dapat mengatur ambang pencocokan wajah.");
+}
+
+export const getFaceThresholdSetting = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertSuper(context as unknown as Ctx);
+    const { getFaceThreshold } = await import("@/lib/asn-face.server");
+    const { FACE_MATCH_THRESHOLD, FACE_THRESHOLD_MIN, FACE_THRESHOLD_MAX } = await import(
+      "@/lib/face-embedding.server"
+    );
+    return {
+      threshold: await getFaceThreshold(),
+      default: FACE_MATCH_THRESHOLD,
+      min: FACE_THRESHOLD_MIN,
+      max: FACE_THRESHOLD_MAX,
+    };
+  });
+
+export const setFaceThresholdSetting = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i: unknown) => z.object({ threshold: z.number().min(0.5).max(1) }).parse(i))
+  .handler(async ({ data, context }) => {
+    await assertSuper(context as unknown as Ctx);
+    const { setFaceThreshold } = await import("@/lib/asn-face.server");
+    const threshold = await setFaceThreshold(data.threshold);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await supabaseAdmin.from("audit_log").insert({
+      user_id: context.userId,
+      aksi: "update_face_threshold",
+      entitas: "app_setting",
+      entitas_id: "face_match_threshold",
+      data_sesudah: { threshold } as never,
+    });
+    return { threshold };
+  });

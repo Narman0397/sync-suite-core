@@ -128,6 +128,7 @@ export const submitAbsensi = createServerFn({ method: "POST" })
         device_fingerprint: z.string().max(200).optional().nullable(),
         foto_base64: z.string().min(100).max(8_000_000), // wajib — anti titip-absen
         biometric_response: z.record(z.unknown()).optional().nullable(), // assertion WebAuthn
+        liveness_score: z.number().min(0).max(255).optional().nullable(),
       })
       .parse(input),
   )
@@ -159,7 +160,23 @@ export const submitAbsensi = createServerFn({ method: "POST" })
     // Verifikasi wajah terpusat di server (pencocokan vektor biometrik di DB).
     const { verifyFace, activeWfa } = await import("@/lib/asn-face.server");
     const face = await verifyFace(userId, data.foto_base64);
-    if (face.enrolled && !face.verified)
+    const { LIVENESS_MIN, FACE_FUSION_MARGIN } = await import("@/lib/face-embedding.server");
+    if (face.outdated)
+      throw new Error("Rekaman wajah Anda perlu diperbarui. Temui Admin OPD untuk rekam ulang wajah.");
+    if (face.enrolled && data.liveness_score != null && data.liveness_score < LIVENESS_MIN)
+      throw new Error(
+        "Wajah tidak terdeteksi sebagai wajah asli. Jangan gunakan foto/layar, lalu ulangi pemindaian.",
+      );
+    // Fusi kontekstual: skor sedikit di bawah ambang boleh diterima bila ASN
+    // berada dalam radius kantor (WFO) dan memakai perangkat yang sebelumnya
+    // pernah lolos verifikasi wajah.
+    let faceDecision: "match" | "fusion" | "none" = face.verified ? "match" : "none";
+    const nearMiss =
+      face.enrolled &&
+      !face.verified &&
+      face.score !== null &&
+      face.score >= face.threshold - FACE_FUSION_MARGIN;
+    if (face.enrolled && !face.verified && !(nearMiss && data.mode === "wfo"))
       throw new Error(
         "Wajah tidak cocok dengan data yang terekam. Pastikan pencahayaan cukup dan wajah menghadap kamera.",
       );
@@ -224,6 +241,25 @@ export const submitAbsensi = createServerFn({ method: "POST" })
         throw new Error("Koordinat kantor belum ditetapkan superadmin. Hubungi admin.");
       }
     }
+
+    if (nearMiss && faceDecision === "none") {
+      const fp = data.device_fingerprint?.slice(0, 200) ?? "";
+      const { data: trusted } = fp
+        ? await supabaseAdmin
+            .from("absensi_asn")
+            .select("id")
+            .eq("user_id", userId)
+            .eq("device_fingerprint_hash", fp)
+            .eq("face_verified", true)
+            .limit(1)
+        : { data: [] };
+      if (!trusted?.length)
+        throw new Error(
+          "Wajah tidak cocok dengan data yang terekam. Pastikan pencahayaan cukup dan wajah menghadap kamera.",
+        );
+      faceDecision = "fusion";
+    }
+    const faceOk = faceDecision !== "none";
 
     // Cegah duplikat masuk/pulang di hari yang sama
     const today = new Date();
@@ -339,7 +375,7 @@ export const submitAbsensi = createServerFn({ method: "POST" })
       biometric_credential_id: biometricCredentialId,
       mode: isWfa ? "wfa" : "qr",
       wfa_reason: wfaReason,
-      face_verified: face.enrolled ? face.verified : false,
+      face_verified: face.enrolled ? faceOk : false,
       face_score: face.score,
       foto_expires_at: fotoExpiresAt,
     });
@@ -351,8 +387,9 @@ export const submitAbsensi = createServerFn({ method: "POST" })
       sumber_jadwal: sumberJadwal,
       biometric_verified: !!biometricCredentialId,
       mode: isWfa ? "wfa" : "qr",
-      face_verified: face.enrolled ? face.verified : false,
+      face_verified: face.enrolled ? faceOk : false,
       face_score: face.score,
+      face_decision: faceDecision,
     };
   });
 

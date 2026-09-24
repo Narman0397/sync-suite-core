@@ -1,7 +1,7 @@
 // Pengambilan foto wajah dari kamera perangkat (dipakai admin saat merekam wajah ASN).
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Camera, Loader2, X } from "lucide-react";
-import { captureFaceCrop } from "@/lib/face-crop";
+import { captureBestFaceCrop } from "@/lib/face-crop";
 
 export type FacePose = { key: string; label: string };
 
@@ -61,7 +61,7 @@ export function FaceCapture({
     const video = videoRef.current;
     if (!video) return;
     void (async () => {
-      const res = await captureFaceCrop(video);
+      const res = await captureBestFaceCrop(video);
       if (!res) return;
       setShots((s) => [...s, res.dataUrl]);
     })();
