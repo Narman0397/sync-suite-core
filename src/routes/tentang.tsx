@@ -19,6 +19,8 @@ export const Route = createFileRoute("/tentang")({
         property: "og:description",
         content: "Profil resmi dan visi misi Pemerintah Kabupaten Buton Selatan.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: TentangPage,
@@ -44,7 +46,7 @@ function TentangPage() {
       />
 
       <section className="container-page py-10 sm:py-14">
-        <div className="rounded-3xl bg-surface p-5 sm:p-8 lg:p-10">
+        <div className="border-l-4 border-primary bg-surface p-5 sm:p-8 lg:p-10">
           <h2 className="text-xl sm:text-2xl font-bold">Struktur Pemerintahan</h2>
           <p className="mt-2 text-sm sm:text-base text-muted-foreground">
             Kabupaten Buton Selatan dipimpin oleh Bupati dan Wakil Bupati dengan dukungan 42
@@ -57,7 +59,7 @@ function TentangPage() {
               const renderCard = (p: Pejabat) => (
                 <div
                   key={p.id}
-                  className="rounded-2xl border border-border bg-card p-5 sm:p-6 text-center shadow-soft"
+                  className="rounded-md border border-border bg-card p-5 text-center shadow-soft sm:p-6"
                 >
                   {p.foto_url ? (
                     <img

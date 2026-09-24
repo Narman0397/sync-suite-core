@@ -23,6 +23,10 @@ export const Route = createFileRoute("/layanan/$slug")({
         name: "description",
         content: "Detail layanan publik: deskripsi, persyaratan, dan alur lengkap.",
       },
+      { property: "og:title", content: `Layanan ${params.slug} — Buton Selatan` },
+      { property: "og:description", content: "Detail persyaratan dan alur layanan publik Kabupaten Buton Selatan." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   loader: async ({ params, context: { queryClient } }) => {
@@ -33,7 +37,7 @@ export const Route = createFileRoute("/layanan/$slug")({
   },
   pendingComponent: () => (
     <PageShell>
-      <section className="bg-gradient-hero text-primary-foreground">
+      <section className="public-hero">
         <div className="container-page py-12 md:py-16">
           <div className="flex items-center gap-2 text-white/85">
             <Loader2 className="h-5 w-5 animate-spin" /> Memuat…
@@ -54,7 +58,7 @@ function LayananDetailPage() {
 
   return (
     <PageShell>
-      <section className="bg-gradient-hero text-primary-foreground">
+      <section className="public-hero">
         <div className="container-page py-12 md:py-16">
           <Link
             to="/layanan"

@@ -11,7 +11,12 @@ export const Route = createFileRoute("/lapor/saya")({
   head: () => ({
     meta: [
       { title: "Laporan Saya — LAPOR! Buton Selatan" },
+      { name: "description", content: "Daftar dan status laporan yang telah Anda kirim." },
       { name: "robots", content: "noindex" },
+      { property: "og:title", content: "Laporan Saya — LAPOR! Buton Selatan" },
+      { property: "og:description", content: "Daftar dan status laporan yang telah Anda kirim." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: LaporSaya,
@@ -56,7 +61,7 @@ function LaporSaya() {
         <h1 className="mt-4 font-display text-2xl font-bold md:text-3xl">Laporan Saya</h1>
         <p className="text-sm text-muted-foreground">Semua laporan LAPOR! yang Anda kirim.</p>
 
-        <div className="mt-6 rounded-2xl border border-border bg-card shadow-soft">
+        <div className="public-panel mt-6 border-t-4 border-t-primary">
           {loading ? (
             <div className="flex items-center gap-2 p-8 text-muted-foreground">
               <Loader2 className="h-5 w-5 animate-spin" /> Memuat…

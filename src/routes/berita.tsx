@@ -19,6 +19,8 @@ export const Route = createFileRoute("/berita")({
         property: "og:description",
         content: "Informasi resmi terkini dari Pemerintah Kabupaten Buton Selatan.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   loader: ({ context: { queryClient } }) => {
@@ -44,8 +46,9 @@ function BeritaPage() {
 
       <section className="container-page py-14">
         {items.length === 0 && (
-          <div className="rounded-2xl border border-dashed border-border bg-card p-12 text-center">
-            <h2 className="font-display text-xl font-bold">Belum ada berita yang terbit</h2>
+          <div className="public-panel border-t-4 border-t-primary p-12 text-center">
+            <Calendar className="mx-auto h-10 w-10 text-primary" />
+            <h2 className="mt-4 font-display text-xl font-bold">Belum ada berita yang terbit</h2>
             <p className="mt-2 text-sm text-muted-foreground">
               Berita akan muncul di sini setelah Super Admin mempublikasikannya melalui CMS.
             </p>
@@ -53,7 +56,7 @@ function BeritaPage() {
         )}
 
         {featured && (
-          <article className="overflow-hidden rounded-3xl border border-border bg-gradient-primary text-primary-foreground shadow-elevated">
+          <article className="overflow-hidden rounded-md border border-border bg-public-hero text-primary-foreground shadow-elevated">
             <div className="grid gap-8 p-8 md:grid-cols-2 md:p-12">
               <div>
                 <div className="flex items-center gap-3 text-xs font-medium uppercase tracking-wider opacity-90">
@@ -103,7 +106,7 @@ function BeritaPage() {
             {rest.map((b) => (
               <article
                 key={b.id}
-                className="group flex flex-col rounded-2xl border border-border bg-card p-6 shadow-soft transition-shadow hover:shadow-elevated"
+                className="public-panel group flex flex-col p-6 transition-transform hover:-translate-y-0.5 hover:shadow-elevated"
               >
                 <div className="flex items-center gap-3 text-xs">
                   <span className="rounded-full bg-primary-soft px-2.5 py-1 font-medium text-primary">

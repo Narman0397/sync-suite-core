@@ -16,6 +16,8 @@ export const Route = createFileRoute("/maklumat-pelayanan")({
         property: "og:description",
         content: "Janji layanan resmi Pemerintah Kabupaten Buton Selatan kepada masyarakat.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: MaklumatPage,
@@ -39,7 +41,7 @@ function MaklumatPage() {
         description="Janji resmi Pemerintah Kabupaten Buton Selatan kepada masyarakat dalam menyelenggarakan pelayanan publik."
       />
       <section className="container-page py-12">
-        <article className="mx-auto max-w-3xl rounded-2xl border border-primary/30 bg-gradient-to-br from-primary-soft/40 to-card p-8 shadow-elevated">
+        <article className="mx-auto max-w-3xl rounded-md border border-primary/30 border-t-4 border-t-primary bg-card p-8 shadow-elevated md:p-10">
           <div className="flex items-center gap-3">
             <ShieldCheck className="h-8 w-8 text-primary" />
             <h1 className="font-display text-2xl font-bold">Maklumat Pelayanan</h1>

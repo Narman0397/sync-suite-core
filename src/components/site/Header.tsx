@@ -112,11 +112,11 @@ export function Header() {
 
   return (
     <header
-      className="sticky top-0 z-50 border-b border-border bg-background"
+      className="sticky top-0 z-50 border-b border-border bg-background/95 shadow-soft backdrop-blur-md"
     >
       {/* Top utility bar */}
       <div className="hidden bg-primary text-primary-foreground md:block">
-        <div className="container-page flex h-9 items-center justify-between text-xs">
+        <div className="container-page flex h-8 items-center justify-between text-[11px]">
           <span className="opacity-90">{branding.top_bar_text}</span>
           <div className="flex items-center gap-5 opacity-90">
             {user ? (
@@ -144,7 +144,7 @@ export function Header() {
         </div>
       </div>
 
-      <div className="container-page flex h-16 items-center justify-between gap-4">
+      <div className="container-page flex h-[4.5rem] items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 lg:flex-initial">
           <img
             src={branding.logo_url || lambang}
@@ -169,8 +169,8 @@ export function Header() {
               key={item.to}
               to={item.to}
               activeOptions={{ exact: item.to === "/" }}
-              className="rounded-md px-3 py-2 text-sm font-medium text-surface-foreground transition-colors hover:bg-primary-soft hover:text-primary"
-              activeProps={{ className: "bg-primary-soft text-primary" }}
+               className="relative rounded-md px-3 py-2 text-sm font-medium text-surface-foreground transition-colors after:absolute after:inset-x-3 after:-bottom-2.5 after:h-0.5 after:scale-x-0 after:bg-primary after:transition-transform hover:bg-primary-soft/60 hover:text-primary"
+               activeProps={{ className: "bg-primary-soft/70 text-primary after:scale-x-100" }}
             >
               {item.label}
             </Link>

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Search, Loader2, Ticket, ArrowRight } from "lucide-react";
+import { Search, Loader2, Ticket, ArrowRight, MessageSquareText, ClipboardCheck, BellRing } from "lucide-react";
 import { PageShell, PageHero } from "@/components/site/PageShell";
 import { getLaporanByTicket } from "@/lib/lapor.functions";
 
@@ -20,6 +20,8 @@ export const Route = createFileRoute("/lapor/")({
         property: "og:description",
         content: "Masukkan nomor tiket LAPOR-YYYY-XXXXXX untuk memantau tindak lanjut.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: LaporIndex,
@@ -60,8 +62,25 @@ function LaporIndex() {
         title="Lacak status laporan Anda."
         description="Setiap laporan yang masuk mendapat nomor tiket unik. Gunakan nomor tersebut untuk memantau tindak lanjut."
       />
-      <section className="container-page py-10">
-        <div className="mx-auto max-w-xl rounded-2xl border border-border bg-card p-6 shadow-soft">
+       <section className="container-page py-12 md:py-16">
+         <div className="mx-auto grid max-w-5xl gap-8 lg:grid-cols-[1fr_1.05fr] lg:items-start">
+           <div>
+             <div className="public-section-kicker">Alur tindak lanjut</div>
+             <h2 className="mt-2 text-2xl font-bold">Laporan Anda dapat dipantau dari awal hingga selesai.</h2>
+             <div className="mt-6 space-y-3">
+               {[
+                 { icon: MessageSquareText, title: "Laporan diterima", text: "Aspirasi tercatat dengan nomor tiket unik." },
+                 { icon: ClipboardCheck, title: "Diteruskan ke OPD", text: "Petugas menelaah dan menindaklanjuti laporan." },
+                 { icon: BellRing, title: "Status diperbarui", text: "Perubahan proses dapat Anda periksa kapan saja." },
+               ].map((item, index) => (
+                 <div key={item.title} className="flex gap-4 border-l-2 border-border py-2 pl-4">
+                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-primary-soft text-primary"><item.icon className="h-4 w-4" /></span>
+                   <div><p className="text-xs font-semibold text-primary">0{index + 1}</p><h3 className="text-sm font-semibold">{item.title}</h3><p className="text-sm text-muted-foreground">{item.text}</p></div>
+                 </div>
+               ))}
+             </div>
+           </div>
+         <div className="public-panel border-t-4 border-t-primary p-6 md:p-8">
           <form onSubmit={submit} className="space-y-3">
             <label className="text-sm font-medium">Nomor Tiket</label>
             <div className="flex items-center gap-2 rounded-lg border border-border bg-background px-3">
@@ -72,8 +91,8 @@ function LaporIndex() {
                 placeholder="LAPOR-2026-000123"
                 className="flex-1 bg-transparent py-2.5 text-sm outline-none uppercase"
                 autoFocus
-              />
-            </div>
+               />
+             </div>
             <button
               type="submit"
               disabled={busy}
@@ -91,7 +110,7 @@ function LaporIndex() {
               Lihat semua laporan saya (perlu masuk) <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
-        </div>
+         </div></div>
       </section>
     </PageShell>
   );

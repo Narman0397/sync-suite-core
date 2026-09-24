@@ -38,12 +38,15 @@
   --color-surface: var(--surface);
   --color-surface-foreground: var(--surface-foreground);
   --color-admin-sidebar: var(--admin-sidebar);
+  --color-public-hero: var(--public-hero);
+  --color-public-hero-muted: var(--public-hero-muted);
+  --color-public-highlight: var(--public-highlight);
 
   --font-display: "Outfit", "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
   --font-sans: "Figtree", "Inter", system-ui, sans-serif;
 
-  --shadow-soft: 0 1px 2px oklch(0.2 0.05 250 / 0.04), 0 4px 16px oklch(0.2 0.05 250 / 0.06);
-  --shadow-elevated: 0 8px 30px oklch(0.2 0.08 250 / 0.12);
+  --shadow-soft: 0 1px 2px oklch(0.2 0.05 250 / 0.035), 0 8px 24px -12px oklch(0.2 0.05 250 / 0.16);
+  --shadow-elevated: 0 18px 48px -24px oklch(0.2 0.08 250 / 0.28);
   --shadow-glow: 0 10px 40px -10px oklch(0.55 0.18 255 / 0.45);
 }
 
@@ -88,6 +91,10 @@
   --input: oklch(0.92 0.012 250);
   --ring: oklch(0.55 0.16 258);
 
+  --public-hero: oklch(0.31 0.12 257);
+  --public-hero-muted: oklch(0.9 0.025 235);
+  --public-highlight: oklch(0.71 0.12 79);
+
   --gradient-hero: linear-gradient(135deg, oklch(0.32 0.14 258) 0%, oklch(0.48 0.18 245) 60%, oklch(0.62 0.16 220) 100%);
   --gradient-primary: linear-gradient(135deg, oklch(0.42 0.16 258), oklch(0.55 0.16 235));
   --gradient-surface: linear-gradient(180deg, oklch(0.99 0.005 250), oklch(0.96 0.015 250));
@@ -115,6 +122,9 @@
   --border: oklch(1 0 0 / 0.08);
   --input: oklch(1 0 0 / 0.12);
   --ring: oklch(0.6 0.16 245);
+  --public-hero: oklch(0.2 0.07 257);
+  --public-hero-muted: oklch(0.24 0.035 235);
+  --public-highlight: oklch(0.78 0.12 79);
 }
 
 @layer base {
@@ -176,6 +186,62 @@
   @media (max-width: 640px) { .grid-opd { grid-template-columns: 1fr; gap: 16px; } }
   .input { display: block; width: 100%; height: 2.5rem; border-radius: 0.5rem; border: 1px solid var(--border); background: var(--background); padding-inline: 0.75rem; font-size: 0.875rem; color: var(--foreground); }
   .input:focus { outline: none; box-shadow: 0 0 0 2px var(--ring); }
+
+  /* Shared public-facing surfaces */
+  .public-page { background: var(--background); }
+  .public-page > section:not(.public-hero):not(.home-hero) { position: relative; }
+  .public-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--public-hero);
+    color: var(--primary-foreground);
+    border-bottom: 4px solid var(--public-highlight);
+  }
+  .public-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: .16;
+    background-image:
+      linear-gradient(90deg, transparent 49.7%, var(--primary-foreground) 50%, transparent 50.3%),
+      linear-gradient(0deg, transparent 49.7%, var(--primary-foreground) 50%, transparent 50.3%);
+    background-size: 56px 56px;
+    mask-image: linear-gradient(90deg, transparent, black 55%, black);
+  }
+  .public-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    color: var(--public-highlight);
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+  .public-eyebrow::before { content: ""; width: 1.75rem; height: 2px; background: currentColor; }
+  .public-panel {
+    border: 1px solid var(--border);
+    border-radius: .5rem;
+    background: var(--card);
+    box-shadow: var(--shadow-soft);
+  }
+  .public-section-kicker {
+    color: var(--accent);
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+  .public-page :where(.rounded-xl, .rounded-2xl, .rounded-3xl) { border-radius: .5rem; }
+  .public-page :where(input, select, textarea) { min-height: 2.75rem; }
+  .public-page :where(table tbody tr) { transition: background-color 150ms ease; }
+  .public-page :where(table tbody tr:hover) { background: color-mix(in oklab, var(--primary-soft) 36%, transparent); }
+  @media (max-width: 639px) {
+    .public-hero::after { background-size: 40px 40px; }
+    .public-page :where(.container-page) { padding-inline: 1rem; }
+  }
 
   /* Hover micro-interactions */
   .hover-lift { transition: transform 220ms ease, box-shadow 220ms ease; }

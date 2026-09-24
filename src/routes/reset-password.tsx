@@ -8,7 +8,12 @@ export const Route = createFileRoute("/reset-password")({
   head: () => ({
     meta: [
       { title: "Reset Password — Portal Buton Selatan" },
+      { name: "description", content: "Atur ulang password akun Portal Buton Selatan." },
       { name: "robots", content: "noindex" },
+      { property: "og:title", content: "Reset Password — Portal Buton Selatan" },
+      { property: "og:description", content: "Atur ulang password akun Portal Buton Selatan." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: ResetPasswordPage,
@@ -35,7 +40,7 @@ function ResetPasswordPage() {
       <section className="container-page py-16">
         <form
           onSubmit={onSubmit}
-          className="mx-auto max-w-md space-y-4 rounded-xl border border-border bg-card p-6 shadow-soft"
+          className="public-panel mx-auto max-w-md space-y-4 border-t-4 border-t-primary p-6 shadow-elevated"
         >
           <h1 className="font-display text-2xl font-bold">Atur Password Baru</h1>
           <input

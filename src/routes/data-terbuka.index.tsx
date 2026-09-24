@@ -2,8 +2,7 @@
 // Mendukung pencarian client-side, filter OPD, dan skeleton saat memuat.
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Header } from "@/components/site/Header";
-import { Footer } from "@/components/site/Footer";
+import { PageHero, PageShell } from "@/components/site/PageShell";
 import { searchPublicForms } from "@/lib/forms-extras.functions";
 import { Database, ChevronRight, Search, ChevronLeft } from "lucide-react";
 
@@ -15,6 +14,10 @@ export const Route = createFileRoute("/data-terbuka/")({
         name: "description",
         content: "Katalog formulir dan dataset publik yang dibuka oleh pemerintah daerah.",
       },
+      { property: "og:title", content: "Data Terbuka — Portal Pemerintah Kabupaten Buton Selatan" },
+      { property: "og:description", content: "Katalog formulir dan dataset publik pemerintah daerah." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: PublicDataPage,
@@ -78,18 +81,12 @@ function PublicDataPage() {
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   return (
-    <>
-      <Header />
-      <main className="container mx-auto max-w-5xl px-4 py-10">
-        <div className="mb-6">
-          <h1 className="font-display text-3xl font-bold text-foreground">Data Terbuka</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Formulir dan dataset publik yang dipublikasikan oleh OPD untuk dimanfaatkan masyarakat.
-          </p>
-        </div>
+    <PageShell>
+      <PageHero eyebrow="Katalog Data" title="Data terbuka untuk masyarakat." description="Formulir dan dataset publik yang dipublikasikan oleh OPD untuk dimanfaatkan masyarakat." />
+      <main className="container-page max-w-5xl py-12">
 
         {/* Toolbar */}
-        <div className="mb-4 flex flex-col gap-2 sm:flex-row">
+        <div className="public-panel mb-6 flex flex-col gap-2 p-3 sm:flex-row">
           <div className="relative flex-1">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input
@@ -152,7 +149,7 @@ function PublicDataPage() {
                   <Link
                     to="/data-terbuka/$slug"
                     params={{ slug: r.slug ?? r.id }}
-                    className="group flex items-start gap-3 rounded-xl border border-border bg-card p-4 transition hover:border-primary hover:shadow-soft"
+                     className="public-panel group flex min-h-32 items-start gap-4 p-5 transition hover:border-primary hover:shadow-elevated"
                   >
                     <div className="rounded-lg bg-gradient-primary p-2 text-primary-foreground">
                       <Database className="h-5 w-5" />
@@ -206,7 +203,6 @@ function PublicDataPage() {
           </>
         )}
       </main>
-      <Footer />
-    </>
+    </PageShell>
   );
 }

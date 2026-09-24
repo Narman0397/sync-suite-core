@@ -21,6 +21,8 @@ export const Route = createFileRoute("/kontak")({
         property: "og:description",
         content: "Saluran resmi pengaduan dan kontak Pemerintah Kabupaten Buton Selatan.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: KontakPage,
@@ -183,7 +185,7 @@ function KontakPage() {
             ].map((it) => (
               <div
                 key={it.title}
-                className="rounded-2xl border border-border bg-card p-5 shadow-soft"
+                className="public-panel p-5"
               >
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-soft text-primary">
@@ -202,7 +204,7 @@ function KontakPage() {
 
           <form
             onSubmit={onSubmit}
-            className="rounded-3xl border border-border bg-card p-8 shadow-elevated lg:col-span-2"
+            className="public-panel border-t-4 border-t-primary p-6 shadow-elevated md:p-8 lg:col-span-2"
           >
             <div className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-gradient-primary text-primary-foreground">
@@ -299,20 +301,6 @@ function KontakPage() {
         </div>
       </section>
 
-      <style>{`
-        .input {
-          width: 100%;
-          border: 1px solid var(--color-border);
-          background: var(--color-background);
-          border-radius: 0.625rem;
-          padding: 0.625rem 0.875rem;
-          font-size: 0.875rem;
-          color: var(--color-foreground);
-          outline: none;
-          transition: border-color .15s, box-shadow .15s;
-        }
-        .input:focus { border-color: var(--color-ring); box-shadow: 0 0 0 3px oklch(0.55 0.16 258 / 0.18); }
-      `}</style>
     </PageShell>
   );
 }

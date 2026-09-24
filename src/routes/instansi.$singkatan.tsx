@@ -32,6 +32,8 @@ export const Route = createFileRoute("/instansi/$singkatan")({
       },
       { property: "og:title", content: `OPD ${params.singkatan} — Buton Selatan` },
       { property: "og:description", content: `Layanan publik yang dikelola ${params.singkatan}.` },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   loader: async ({ params, context: { queryClient } }) => {

@@ -6,7 +6,7 @@ export function PageShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      <main className="flex-1">{children}</main>
+      <main className="public-page flex-1">{children}</main>
       <Footer />
     </div>
   );
@@ -22,16 +22,16 @@ export function PageHero({
   description?: string;
 }) {
   return (
-    <section className="bg-gradient-hero text-primary-foreground">
-      <div className="container-page py-16 md:py-20">
+    <section className="public-hero">
+      <div className="container-page py-12 md:py-16">
         {eyebrow && (
-          <div className="mb-3 inline-flex rounded-full border border-white/20 bg-white/20 px-3 py-1 text-xs font-medium tracking-wide uppercase">
+          <div className="public-eyebrow mb-4">
             {eyebrow}
           </div>
         )}
-        <h1 className="max-w-3xl text-balance text-3xl font-bold md:text-5xl">{title}</h1>
+        <h1 className="max-w-4xl text-balance text-3xl font-bold leading-tight md:text-5xl">{title}</h1>
         {description && (
-          <p className="mt-4 max-w-2xl text-base text-white/85 md:text-lg">{description}</p>
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-primary-foreground/80 md:text-lg">{description}</p>
         )}
       </div>
     </section>

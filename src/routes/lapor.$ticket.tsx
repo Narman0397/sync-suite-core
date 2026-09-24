@@ -12,6 +12,10 @@ export const Route = createFileRoute("/lapor/$ticket")({
       { title: `Laporan ${params.ticket} — LAPOR! Buton Selatan` },
       { name: "description", content: "Status tindak lanjut laporan pengaduan masyarakat." },
       { name: "robots", content: "noindex" },
+      { property: "og:title", content: `Status Laporan ${params.ticket}` },
+      { property: "og:description", content: "Status tindak lanjut laporan pengaduan masyarakat." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: LaporDetail,
@@ -67,7 +71,7 @@ function LaporDetail() {
             <Loader2 className="h-5 w-5 animate-spin" /> Memuat laporan…
           </div>
         ) : !row ? (
-          <div className="mt-8 rounded-2xl border border-dashed border-border bg-card p-10 text-center">
+          <div className="public-panel mt-8 border-dashed p-10 text-center">
             <p className="font-semibold text-foreground">Tiket tidak ditemukan</p>
             <p className="mt-2 text-sm text-muted-foreground">
               Pastikan nomor tiket sesuai format LAPOR-YYYY-000000.
@@ -75,7 +79,7 @@ function LaporDetail() {
           </div>
         ) : (
           <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_300px]">
-            <article className="rounded-2xl border border-border bg-card p-6 shadow-soft">
+            <article className="public-panel border-t-4 border-t-primary p-6">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <p className="text-xs uppercase tracking-wide text-muted-foreground">Nomor Tiket</p>
@@ -128,7 +132,7 @@ function LaporDetail() {
             </article>
 
             <aside className="space-y-3 text-sm">
-              <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
+              <div className="public-panel p-5">
                 <p className="text-xs uppercase text-muted-foreground">Diterima</p>
                 <p className="mt-1 font-medium">{new Date(row.created_at).toLocaleString("id-ID")}</p>
                 <p className="mt-3 text-xs uppercase text-muted-foreground">Terakhir diperbarui</p>

@@ -1,8 +1,7 @@
 // Portal Data Terbuka — detail per slug.
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Header } from "@/components/site/Header";
-import { Footer } from "@/components/site/Footer";
+import { PageHero, PageShell } from "@/components/site/PageShell";
 import { getPublicFormBySlug } from "@/lib/forms-extras.functions";
 
 export const Route = createFileRoute("/data-terbuka/$slug")({
@@ -13,6 +12,10 @@ export const Route = createFileRoute("/data-terbuka/$slug")({
         name: "description",
         content: "Detail dataset publik (skema kolom dan ringkasan agregat).",
       },
+      { property: "og:title", content: `Data ${params.slug} — Portal Buton Selatan` },
+      { property: "og:description", content: "Detail skema dan ringkasan dataset publik terverifikasi." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: DetailPage,
@@ -51,9 +54,9 @@ function DetailPage() {
   }, [slug]);
 
   return (
-    <>
-      <Header />
-      <main className="container mx-auto max-w-3xl px-4 py-10">
+    <PageShell>
+      <PageHero eyebrow="Data Terbuka" title={data?.form?.judul ?? "Detail dataset publik"} description="Skema dan ringkasan data yang dipublikasikan pemerintah daerah." />
+      <main className="container-page max-w-3xl py-12">
         {busy && <p className="text-sm text-muted-foreground">Memuat…</p>}
         {!busy && !data?.form && (
           <p className="text-sm text-muted-foreground">
@@ -61,13 +64,10 @@ function DetailPage() {
           </p>
         )}
         {data?.form && (
-          <article>
+          <article className="public-panel border-t-4 border-t-primary p-6 md:p-8">
             <div className="text-xs text-muted-foreground">
               {data.form.opd?.nama ?? "Pemerintah Daerah"}
             </div>
-            <h1 className="mt-1 font-display text-2xl font-bold text-foreground">
-              {data.form.judul}
-            </h1>
             {data.form.deskripsi && (
               <p className="mt-2 text-sm text-muted-foreground">{data.form.deskripsi}</p>
             )}
@@ -103,7 +103,6 @@ function DetailPage() {
           </article>
         )}
       </main>
-      <Footer />
-    </>
+    </PageShell>
   );
 }
