@@ -529,6 +529,21 @@ function AbsensiPage() {
           </div>
         </div>
       </section>
+
+      <FaceScanModal
+        open={faceScanOpen}
+        title={`Verifikasi Wajah — Absen ${tipe === "masuk" ? "Masuk" : "Pulang"}`}
+        subtitle={
+          mode === "wfa" ? "Absen dari luar kantor" : "Absen di kantor · wajah direkam untuk bukti"
+        }
+        busy={busy}
+        onCapture={(foto) => finalizeAbsensi(pendingToken, foto)}
+        onCancel={() => {
+          if (busy) return;
+          setFaceScanOpen(false);
+          setPendingToken(null);
+        }}
+      />
     </PageShell>
   );
 }
