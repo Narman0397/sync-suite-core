@@ -11,6 +11,7 @@ import { startAuthentication } from "@simplewebauthn/browser";
 import { startBiometricAssertion } from "@/lib/asn-biometric.functions";
 import { myFaceStatus } from "@/lib/asn-face.functions";
 import { BiometricEnrollCard, useBiometricStatus } from "@/components/asn/BiometricEnrollCard";
+import { FaceScanModal } from "@/components/asn/FaceScanModal";
 
 export const Route = createFileRoute("/_authenticated/asn/absensi")({
   head: () => ({
@@ -58,6 +59,8 @@ function AbsensiPage() {
   const [gpsError, setGpsError] = useState<string | null>(null);
   const [requestingGps, setRequestingGps] = useState(false);
   const [rows, setRows] = useState<Row[]>([]);
+  const [faceScanOpen, setFaceScanOpen] = useState(false);
+  const [pendingToken, setPendingToken] = useState<string | null>(null);
   const bio = useBiometricStatus();
   const [schedule, setSchedule] = useState<{
     nama: string;
@@ -253,9 +256,12 @@ function AbsensiPage() {
         biometric ? `Absen ${tipe} tercatat (terverifikasi sidik jari)` : `Absen ${tipe} tercatat`,
       );
       setScanned(null);
+      setFaceScanOpen(false);
+      setPendingToken(null);
       await reload();
     } catch (e) {
       toast.error((e as Error).message);
+      setFaceScanOpen(false);
     } finally {
       setBusy(false);
     }
