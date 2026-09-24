@@ -222,7 +222,7 @@ function AbsensiPage() {
   }
 
   // Langkah 2: foto hasil pemindaian wajah dikirim ke server.
-  async function finalizeAbsensi(token: string | null, foto: string) {
+  async function finalizeAbsensi(token: string | null, foto: string, liveness: number | null) {
     if (!coords) return;
     setBusy(true);
     try {
@@ -250,6 +250,7 @@ function AbsensiPage() {
           device_fingerprint: fp,
           foto_base64: foto,
           biometric_response: biometric,
+          liveness_score: liveness,
         },
       });
       toast.success(
@@ -537,7 +538,7 @@ function AbsensiPage() {
           mode === "wfa" ? "Absen dari luar kantor" : "Absen di kantor · wajah direkam untuk bukti"
         }
         busy={busy}
-        onCapture={(foto) => finalizeAbsensi(pendingToken, foto)}
+        onCapture={(foto, live) => finalizeAbsensi(pendingToken, foto, live)}
         onCancel={() => {
           if (busy) return;
           setFaceScanOpen(false);

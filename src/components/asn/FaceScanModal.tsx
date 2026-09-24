@@ -3,7 +3,7 @@
 // pemindai, hitung mundur, lalu mengembalikan foto (data URL JPEG) ke pemanggil.
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Loader2, ScanFace, X } from "lucide-react";
-import { captureFaceCrop } from "@/lib/face-crop";
+import { captureBestFaceCrop, measureFaceBrightness } from "@/lib/face-crop";
 
 type Phase = "starting" | "ready" | "counting" | "captured" | "verifying" | "error";
 
@@ -20,7 +20,8 @@ export function FaceScanModal({
   subtitle?: string;
   /** true saat server sedang memproses hasil (kirim absen / cocokkan wajah) */
   busy?: boolean;
-  onCapture: (dataUrl: string) => void | Promise<void>;
+  /** liveness = selisih kecerahan wajah saat layar berkedip putih (null bila gagal diukur) */
+  onCapture: (dataUrl: string, liveness: number | null) => void | Promise<void>;
   onCancel: () => void;
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -29,6 +30,7 @@ export function FaceScanModal({
   const [err, setErr] = useState<string | null>(null);
   const [count, setCount] = useState(3);
   const [shot, setShot] = useState<string | null>(null);
+  const [flash, setFlash] = useState(false);
 
   const stop = useCallback(() => {
     streamRef.current?.getTracks().forEach((t) => t.stop());
@@ -69,11 +71,20 @@ export function FaceScanModal({
     };
   }, [open, stop]);
 
-  const grabFrame = useCallback(async (): Promise<string | null> => {
+  // Liveness pasif (kedip layar) + best-shot dari beberapa frame.
+  const grabFrame = useCallback(async (): Promise<{ data: string; liveness: number | null } | null> => {
     const video = videoRef.current;
     if (!video) return null;
-    const res = await captureFaceCrop(video);
-    return res?.dataUrl ?? null;
+    const res = await captureBestFaceCrop(video);
+    if (!res) return null;
+    const base = await measureFaceBrightness(video);
+    setFlash(true);
+    await new Promise((r) => setTimeout(r, 380));
+    const lit = await measureFaceBrightness(video);
+    setFlash(false);
+    const liveness =
+      base !== null && lit !== null ? Number(Math.max(0, lit - base).toFixed(2)) : null;
+    return { data: res.dataUrl, liveness };
   }, []);
 
   // Hitung mundur sebelum foto diambil.
@@ -82,9 +93,10 @@ export function FaceScanModal({
     if (count <= 0) {
       let cancelled = false;
       void (async () => {
-        const data = await grabFrame();
+        const res = await grabFrame();
         if (cancelled) return;
-        if (!data) {
+        const data = res?.data;
+        if (!res || !data) {
           setErr("Gagal mengambil gambar dari kamera.");
           setPhase("error");
           return;
@@ -92,7 +104,7 @@ export function FaceScanModal({
         setShot(data);
         stop();
         setPhase("verifying");
-        void onCapture(data);
+        void onCapture(data, res.liveness);
       })();
       return () => {
         cancelled = true;
@@ -108,6 +120,8 @@ export function FaceScanModal({
   const verifying = phase === "verifying" || !!busy;
 
   return (
+    <>
+    {flash && <div className="pointer-events-none fixed inset-0 z-[60] bg-background" style={{ background: "white" }} />}
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-0 sm:items-center sm:p-4">
       <div className="w-full max-w-md rounded-t-2xl border border-border bg-card p-4 sm:rounded-2xl">
         <div className="flex items-start justify-between gap-2">
@@ -229,5 +243,6 @@ export function FaceScanModal({
         )}
       </div>
     </div>
+    </>
   );
 }
