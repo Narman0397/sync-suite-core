@@ -1,0 +1,104 @@
+name: Deploy Database
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "supabase/migrations/**"
+      - "supabase/seed.sql"
+      - "supabase/config.toml"
+      - "supabase/storage-buckets.sql"
+      - "scripts/deploy-schema.sh"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "migrate = terapkan migrasi baru (aman). full-reset = DROP schema public lalu bangun ulang dari schema.sql (MENGHAPUS SEMUA DATA)."
+        type: choice
+        required: true
+        default: migrate
+        options:
+          - migrate
+          - full-reset
+      apply_seed:
+        description: "Terapkan supabase/seed.sql (idempotent, ON CONFLICT DO NOTHING)."
+        type: boolean
+        required: false
+        default: true
+      confirm_reset:
+        description: "Ketik persis RESET-PRODUCTION untuk mengizinkan full-reset."
+        type: string
+        required: false
+        default: ""
+
+# Cegah dua deploy database berjalan bersamaan (migrasi tidak boleh saling tumpang tindih).
+concurrency:
+  group: db-deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    # Mode default untuk push otomatis selalu "migrate"; full-reset hanya lewat dispatch manual.
+    env:
+      SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      DEPLOY_MODE: ${{ github.event.inputs.mode || 'migrate' }}
+      APPLY_SEED: ${{ github.event.inputs.apply_seed || 'true' }}
+      CONFIRM_RESET: ${{ github.event.inputs.confirm_reset }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validasi secrets
+        run: |
+          missing=0
+          [ -z "$SUPABASE_PROJECT_ID" ] && echo "::error::Secret SUPABASE_PROJECT_ID belum di-set." && missing=1
+          [ -z "$SUPABASE_DB_PASSWORD" ] && echo "::error::Secret SUPABASE_DB_PASSWORD belum di-set." && missing=1
+          [ "$missing" = "1" ] && exit 1
+          echo "Secrets OK."
+
+      - name: Gerbang keamanan full-reset
+        if: env.DEPLOY_MODE == 'full-reset'
+        run: |
+          if [ "$CONFIRM_RESET" != "RESET-PRODUCTION" ]; then
+            echo "::error::full-reset menghapus seluruh data. Jalankan ulang dan isi confirm_reset dengan RESET-PRODUCTION."
+            exit 1
+          fi
+
+      - name: Install psql
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client
+
+      - uses: supabase/setup-cli@v1
+        if: env.DEPLOY_MODE == 'migrate'
+        with:
+          version: latest
+
+      # Jalur normal: hanya migrasi yang belum tercatat di supabase_migrations.schema_migrations
+      # yang dijalankan. Data lama tetap utuh.
+      - name: Link project
+        if: env.DEPLOY_MODE == 'migrate'
+        run: supabase link --project-ref "$SUPABASE_PROJECT_ID"
+
+      - name: Push migrations
+        if: env.DEPLOY_MODE == 'migrate'
+        run: supabase db push --include-all
+
+      # Jalur darurat / bootstrap database kosong.
+      - name: Full schema reset
+        if: env.DEPLOY_MODE == 'full-reset'
+        run: bash scripts/deploy-schema.sh
+
+
+      - name: Terapkan bucket storage (idempotent)
+        run: bash scripts/apply-storage-buckets.sh
+
+      - name: Apply seed (idempotent)
+        if: env.DEPLOY_MODE == 'migrate' && env.APPLY_SEED == 'true'
+        run: bash scripts/apply-seed.sh
+
+      - name: Verifikasi schema
+        run: bash scripts/verify-schema.sh

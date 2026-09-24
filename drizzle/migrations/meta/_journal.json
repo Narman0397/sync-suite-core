@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1789862681399,
+      "tag": "0000_secure_executive_dashboard_summary",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789862767589,
+      "tag": "0001_include_kepala_bkpsdm_in_executive_access",
+      "breakpoints": true
+    }
+  ]
+}

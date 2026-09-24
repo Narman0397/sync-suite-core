@@ -1,0 +1,55 @@
+# Konfigurasi Cloudflare Workers untuk TanStack Start (nitro preset cloudflare).
+#
+# PENTING — jangan menambahkan blok [env.*] di file ini.
+# Saat `bun run build`, nitro MENYALIN isi file ini ke config hasil build
+# `dist/server/wrangler.json`, lalu menulis `.wrangler/deploy/config.json`
+# yang menunjuk (redirect) ke sana. Cloudflare menolak redirected config yang
+# memuat environment:
+#   "Redirected configurations cannot include environments"
+# Jadi file ini harus berupa SATU environment datar (top-level saja).
+#
+# Nilai yang di-override otomatis oleh nitro saat build (jangan diset manual):
+#   - main    -> dist/server/index.mjs
+#   - assets  -> dist/client (binding ASSETS)
+#
+# Deploy:
+#   bun run build && wrangler deploy
+#
+# Secret runtime (dibaca Worker saat request):
+#   wrangler secret put SUPABASE_URL
+#   wrangler secret put SUPABASE_PUBLISHABLE_KEY
+#   wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+#   wrangler secret put SUPABASE_PROJECT_ID
+#
+# Butuh worker staging/dev terpisah? Jangan pakai [env.*] — gunakan file config
+# terpisah dengan nama worker berbeda, mis. `wrangler.dev.toml`, lalu:
+#   bun run build && wrangler deploy --config wrangler.dev.toml
+# (file itu juga harus datar tanpa blok [env.*])
+#
+# CATATAN: VITE_SUPABASE_* di-inline ke bundle client saat `bun run build`,
+# jadi build ulang setiap kali kredensial client berubah.
+
+name = "narman-app"
+# Entry-point & assets: nitro tetap menimpanya saat build, tapi nilai eksplisit
+# di sini mencegah error "Missing entry-point to Worker script or to assets
+# directory" bila `wrangler deploy` dijalankan memakai config root ini.
+main = "dist/server/index.mjs"
+
+# compatibility_date HARUS >= 2025-04-01. Di bawah tanggal itu workerd TIDAK
+# menyalin vars/secret ke `process.env`, sehingga SUPABASE_URL /
+# SUPABASE_SERVICE_ROLE_KEY terbaca undefined walaupun sudah di-set di Worker
+# (inilah penyebab pesan "Missing Supabase environment variable(s)").
+compatibility_date = "2025-09-01"
+compatibility_flags = ["nodejs_compat", "nodejs_compat_populate_process_env"]
+
+# CATATAN URUTAN: blok [assets] HARUS berada SETELAH semua key top-level
+# (main / compatibility_date / compatibility_flags). Kalau ditaruh sebelumnya,
+# key-key itu dianggap bagian dari tabel [assets] -> wrangler error
+# "Unexpected fields found in assets field".
+[assets]
+directory = "dist/client"
+binding = "ASSETS"
+
+
+# [observability]
+# enabled = true
