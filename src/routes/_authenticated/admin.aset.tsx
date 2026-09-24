@@ -1,3 +1,4 @@
+import { LocationLabel } from "@/components/site/LocationLabel";
 // Dashboard Aset super admin: CRUD aset + Riwayat scan.
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
@@ -479,7 +480,7 @@ function RiwayatTab() {
             {r.lokasi_text && <div className="text-xs">📍 {r.lokasi_text}</div>}
             {r.lat !== null && r.lng !== null && (
               <div className="text-xs text-muted-foreground">
-                GPS: {Number(r.lat).toFixed(5)}, {Number(r.lng).toFixed(5)}
+                <LocationLabel prefix="GPS: " lat={r.lat} lng={r.lng} />
               </div>
             )}
             {r.catatan && <div className="text-xs">{r.catatan}</div>}

@@ -1,3 +1,4 @@
+import { LocationLabel } from "@/components/site/LocationLabel";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { toast } from "sonner";
@@ -401,7 +402,7 @@ function AsetPage() {
                     />
                     {coords && (
                       <p className="text-xs text-muted-foreground">
-                        GPS: {coords.lat.toFixed(5)}, {coords.lng.toFixed(5)}
+                        <LocationLabel prefix="GPS: " lat={coords.lat} lng={coords.lng} />
                       </p>
                     )}
                     <div className="flex gap-2">
