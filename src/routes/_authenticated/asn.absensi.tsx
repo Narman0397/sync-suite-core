@@ -1,3 +1,4 @@
+import { LocationLabel } from "@/components/site/LocationLabel";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
@@ -483,7 +484,7 @@ function AbsensiPage() {
             )}
             {coords && (
               <p className="mt-2 text-xs text-muted-foreground">
-                Lokasi: {coords.lat.toFixed(5)}, {coords.lng.toFixed(5)}
+                <LocationLabel prefix="Lokasi: " lat={coords.lat} lng={coords.lng} />
               </p>
             )}
           </div>

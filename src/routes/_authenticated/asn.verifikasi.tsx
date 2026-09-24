@@ -1,3 +1,4 @@
+import { LocationLabel } from "@/components/site/LocationLabel";
 // Phase 1: ASN-facing verifikasi aset (kampanye). ASN melihat item yang
 // ditugaskan untuk OPD-nya, lalu memverifikasi dengan foto + GPS.
 import { createFileRoute, Link } from "@tanstack/react-router";
@@ -362,8 +363,7 @@ function Page() {
 
                     {coords && (
                       <div className="text-xs text-muted-foreground flex items-center gap-1">
-                        <MapPin className="h-3 w-3" /> {coords.lat.toFixed(5)},{" "}
-                        {coords.lng.toFixed(5)}
+                        <MapPin className="h-3 w-3" /> <LocationLabel lat={coords.lat} lng={coords.lng} />
                       </div>
                     )}
 

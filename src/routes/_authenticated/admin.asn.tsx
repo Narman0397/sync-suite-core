@@ -1,3 +1,4 @@
+import { LocationLabel } from "@/components/site/LocationLabel";
 // Dashboard ASN super admin: Kantor & QR + Monitoring Absensi.
 import { useEffect, useState, useMemo } from "react";
 import { createFileRoute } from "@tanstack/react-router";
@@ -501,9 +502,7 @@ function AbsensiTab({ opds }: { opds: Opd[] }) {
                 </td>
                 <td className="px-3 py-2 text-xs">{new Date(r.waktu).toLocaleString("id-ID")}</td>
                 <td className="px-3 py-2 text-xs">
-                  {r.lat !== null && r.lng !== null
-                    ? `${Number(r.lat).toFixed(5)}, ${Number(r.lng).toFixed(5)}`
-                    : "-"}
+                  <LocationLabel lat={r.lat} lng={r.lng} />
                 </td>
               </tr>
             ))}
