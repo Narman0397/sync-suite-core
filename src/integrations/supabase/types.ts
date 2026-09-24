@@ -16,10 +16,16 @@ export type Database = {
     Tables: {
       absensi_asn: {
         Row: {
+          biometric_credential_id: string | null
+          biometric_verified: boolean
           catatan: string | null
           created_at: string
           device_fingerprint_hash: string | null
           device_info: string | null
+          face_score: number | null
+          face_verified: boolean
+          foto_deleted_at: string | null
+          foto_expires_at: string | null
           foto_url: string | null
           id: string
           is_late: boolean
@@ -27,17 +33,25 @@ export type Database = {
           late_minutes: number
           lng: number | null
           lokasi: string | null
+          mode: string
           opd_id: string | null
           schedule_id: string | null
           tipe: string
           user_id: string
           waktu: string
+          wfa_reason: string | null
         }
         Insert: {
+          biometric_credential_id?: string | null
+          biometric_verified?: boolean
           catatan?: string | null
           created_at?: string
           device_fingerprint_hash?: string | null
           device_info?: string | null
+          face_score?: number | null
+          face_verified?: boolean
+          foto_deleted_at?: string | null
+          foto_expires_at?: string | null
           foto_url?: string | null
           id?: string
           is_late?: boolean
@@ -45,17 +59,25 @@ export type Database = {
           late_minutes?: number
           lng?: number | null
           lokasi?: string | null
+          mode?: string
           opd_id?: string | null
           schedule_id?: string | null
           tipe: string
           user_id: string
           waktu?: string
+          wfa_reason?: string | null
         }
         Update: {
+          biometric_credential_id?: string | null
+          biometric_verified?: boolean
           catatan?: string | null
           created_at?: string
           device_fingerprint_hash?: string | null
           device_info?: string | null
+          face_score?: number | null
+          face_verified?: boolean
+          foto_deleted_at?: string | null
+          foto_expires_at?: string | null
           foto_url?: string | null
           id?: string
           is_late?: boolean
@@ -63,11 +85,13 @@ export type Database = {
           late_minutes?: number
           lng?: number | null
           lokasi?: string | null
+          mode?: string
           opd_id?: string | null
           schedule_id?: string | null
           tipe?: string
           user_id?: string
           waktu?: string
+          wfa_reason?: string | null
         }
         Relationships: [
           {
