@@ -14,18 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      _storage_bootstrap: {
+        Row: {
+          part: number
+          sql: string
+        }
+        Insert: {
+          part: number
+          sql: string
+        }
+        Update: {
+          part?: number
+          sql?: string
+        }
+        Relationships: []
+      }
       absensi_asn: {
         Row: {
-          biometric_credential_id: string | null
-          biometric_verified: boolean
           catatan: string | null
           created_at: string
           device_fingerprint_hash: string | null
           device_info: string | null
-          face_score: number | null
-          face_verified: boolean
-          foto_deleted_at: string | null
-          foto_expires_at: string | null
           foto_url: string | null
           id: string
           is_late: boolean
@@ -33,25 +42,17 @@ export type Database = {
           late_minutes: number
           lng: number | null
           lokasi: string | null
-          mode: string
           opd_id: string | null
           schedule_id: string | null
           tipe: string
           user_id: string
           waktu: string
-          wfa_reason: string | null
         }
         Insert: {
-          biometric_credential_id?: string | null
-          biometric_verified?: boolean
           catatan?: string | null
           created_at?: string
           device_fingerprint_hash?: string | null
           device_info?: string | null
-          face_score?: number | null
-          face_verified?: boolean
-          foto_deleted_at?: string | null
-          foto_expires_at?: string | null
           foto_url?: string | null
           id?: string
           is_late?: boolean
@@ -59,25 +60,17 @@ export type Database = {
           late_minutes?: number
           lng?: number | null
           lokasi?: string | null
-          mode?: string
           opd_id?: string | null
           schedule_id?: string | null
           tipe: string
           user_id: string
           waktu?: string
-          wfa_reason?: string | null
         }
         Update: {
-          biometric_credential_id?: string | null
-          biometric_verified?: boolean
           catatan?: string | null
           created_at?: string
           device_fingerprint_hash?: string | null
           device_info?: string | null
-          face_score?: number | null
-          face_verified?: boolean
-          foto_deleted_at?: string | null
-          foto_expires_at?: string | null
           foto_url?: string | null
           id?: string
           is_late?: boolean
@@ -85,13 +78,11 @@ export type Database = {
           late_minutes?: number
           lng?: number | null
           lokasi?: string | null
-          mode?: string
           opd_id?: string | null
           schedule_id?: string | null
           tipe?: string
           user_id?: string
           waktu?: string
-          wfa_reason?: string | null
         }
         Relationships: [
           {
@@ -973,212 +964,6 @@ export type Database = {
             columns: ["opd_id"]
             isOneToOne: false
             referencedRelation: "opd"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      asn_face_template: {
-        Row: {
-          adapt_count: number
-          aktif: boolean
-          created_at: string
-          embedding: number[]
-          enrolled_by: string | null
-          id: string
-          opd_id: string | null
-          quality: number | null
-          samples: number
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          adapt_count?: number
-          aktif?: boolean
-          created_at?: string
-          embedding: number[]
-          enrolled_by?: string | null
-          id?: string
-          opd_id?: string | null
-          quality?: number | null
-          samples?: number
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          adapt_count?: number
-          aktif?: boolean
-          created_at?: string
-          embedding?: number[]
-          enrolled_by?: string | null
-          id?: string
-          opd_id?: string | null
-          quality?: number | null
-          samples?: number
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "asn_face_template_enrolled_by_fkey"
-            columns: ["enrolled_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "asn_face_template_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      asn_webauthn_challenge: {
-        Row: {
-          challenge: string
-          created_at: string
-          expires_at: string
-          id: string
-          tujuan: string
-          user_id: string
-        }
-        Insert: {
-          challenge: string
-          created_at?: string
-          expires_at: string
-          id?: string
-          tujuan: string
-          user_id: string
-        }
-        Update: {
-          challenge?: string
-          created_at?: string
-          expires_at?: string
-          id?: string
-          tujuan?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "asn_webauthn_challenge_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      asn_webauthn_credential: {
-        Row: {
-          aktif: boolean
-          counter: number
-          created_at: string
-          credential_id: string
-          device_label: string | null
-          enrolled_by: string | null
-          finger_label: string | null
-          id: string
-          last_used_at: string | null
-          public_key: string
-          transports: string[] | null
-          user_id: string
-        }
-        Insert: {
-          aktif?: boolean
-          counter?: number
-          created_at?: string
-          credential_id: string
-          device_label?: string | null
-          enrolled_by?: string | null
-          finger_label?: string | null
-          id?: string
-          last_used_at?: string | null
-          public_key: string
-          transports?: string[] | null
-          user_id: string
-        }
-        Update: {
-          aktif?: boolean
-          counter?: number
-          created_at?: string
-          credential_id?: string
-          device_label?: string | null
-          enrolled_by?: string | null
-          finger_label?: string | null
-          id?: string
-          last_used_at?: string | null
-          public_key?: string
-          transports?: string[] | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "asn_webauthn_credential_enrolled_by_fkey"
-            columns: ["enrolled_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "asn_webauthn_credential_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      asn_wfa_assignment: {
-        Row: {
-          alasan: string | null
-          created_at: string
-          created_by: string | null
-          id: string
-          mulai: string
-          nomor_surat: string | null
-          opd_id: string | null
-          selesai: string
-          status: string
-          user_id: string
-        }
-        Insert: {
-          alasan?: string | null
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          mulai: string
-          nomor_surat?: string | null
-          opd_id?: string | null
-          selesai: string
-          status?: string
-          user_id: string
-        }
-        Update: {
-          alasan?: string | null
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          mulai?: string
-          nomor_surat?: string | null
-          opd_id?: string | null
-          selesai?: string
-          status?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "asn_wfa_assignment_created_by_fkey"
-            columns: ["created_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "asn_wfa_assignment_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -6792,10 +6577,6 @@ export type Database = {
       }
       check_signed_document_status: { Args: { _id: string }; Returns: string }
       count_permohonan_bulan_ini: { Args: never; Returns: number }
-      dashboard_summary: {
-        Args: { _days?: number; _opd?: string }
-        Returns: Json
-      }
       derive_system_position_from_jabatan: {
         Args: { _kategori?: string; _kode: string; _nama: string }
         Returns: string
