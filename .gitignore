@@ -16,6 +16,11 @@ dist-ssr
 .nitro
 *.local
 
+# Environment / secrets — jangan commit key Supabase / API apapun
+.env
+.env.*
+!.env.example
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars

@@ -1,6 +1,6 @@
 import { createStart, createCsrfMiddleware, createMiddleware } from "@tanstack/react-start";
 
-import { renderErrorPage } from "./lib/error-page";
+import { classifyServerError, describeServerError, renderErrorPage } from "./lib/error-page";
 import { attachSupabaseAuth } from "@/integrations/supabase/auth-attacher";
 
 const errorMiddleware = createMiddleware().server(async ({ next }) => {
@@ -10,11 +10,25 @@ const errorMiddleware = createMiddleware().server(async ({ next }) => {
     if (error != null && typeof error === "object" && "statusCode" in error) {
       throw error;
     }
-    console.error(error);
-    return new Response(renderErrorPage(), {
-      status: 500,
-      headers: { "content-type": "text/html; charset=utf-8" },
-    });
+    const code = classifyServerError(error);
+    const reference = `${Date.now().toString(36)}`.toUpperCase();
+    console.error(`[${code}] ref=${reference}`, error);
+    return new Response(
+      renderErrorPage({
+        code,
+        reference,
+        message: describeServerError(error).slice(0, 300),
+        status: 500,
+      }),
+      {
+        status: 500,
+        headers: {
+          "content-type": "text/html; charset=utf-8",
+          "x-error-code": code,
+          "x-error-ref": reference,
+        },
+      },
+    );
   }
 });
 
