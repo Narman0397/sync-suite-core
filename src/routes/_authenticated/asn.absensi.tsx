@@ -151,6 +151,14 @@ function AbsensiPage() {
       .catch(() => setSchedule(null));
   }, [user, isAsn]);
 
+  // Status rekaman wajah & penugasan luar kantor yang aktif hari ini.
+  useEffect(() => {
+    if (!user || !isAsn) return;
+    (myFaceStatus() as unknown as Promise<FaceStatus>)
+      .then((r) => setFace(r))
+      .catch(() => setFace(null));
+  }, [user, isAsn]);
+
   // Token dari deep-link /asn/scan/$token
   useEffect(() => {
     if (typeof window === "undefined") return;
