@@ -1,17 +1,20 @@
 // Helper server-only untuk biometrik wajah terpusat & retensi foto absensi.
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import {
   adaptEmbedding,
   averageEmbeddings,
   cosineSimilarity,
   extractFaceEmbedding,
   imageQuality,
-  FACE_ADAPT_THRESHOLD,
+  FACE_DIM,
+  FACE_ADAPT_MARGIN,
   FACE_MATCH_THRESHOLD,
+  FACE_THRESHOLD_MAX,
+  FACE_THRESHOLD_MIN,
 } from "@/lib/face-embedding.server";
 
 export const MIN_FACE_SAMPLES = 3;
 export const FOTO_RETENTION_DAYS = 7;
+export const FACE_THRESHOLD_KEY = "face_match_threshold";
 
 export type FaceTemplate = {
   id: string;
@@ -23,6 +26,46 @@ export type FaceTemplate = {
   updated_at: string;
   aktif: boolean;
 };
+
+/**
+ * Multi-template disimpan dalam satu kolom vektor: [rata-rata, pose1, pose2, pose3]
+ * (masing-masing FACE_DIM). Template format lama (hanya 1 vektor) dianggap usang.
+ */
+function unpack(v: number[]): { avg: number[]; poses: number[][] } | null {
+  if (!Array.isArray(v) || v.length < FACE_DIM * 2 || v.length % FACE_DIM !== 0) return null;
+  const parts: number[][] = [];
+  for (let i = 0; i < v.length; i += FACE_DIM) parts.push(v.slice(i, i + FACE_DIM).map(Number));
+  return { avg: parts[0], poses: parts.slice(1) };
+}
+function pack(avg: number[], poses: number[][]): number[] {
+  return [...avg, ...poses.flat()];
+}
+
+export function clampThreshold(t: number) {
+  return Math.min(FACE_THRESHOLD_MAX, Math.max(FACE_THRESHOLD_MIN, Number(t.toFixed(2))));
+}
+
+export async function getFaceThreshold(): Promise<number> {
+  const { data } = await supabaseAdmin
+    .from("app_setting")
+    .select("value")
+    .eq("key", FACE_THRESHOLD_KEY)
+    .maybeSingle();
+  const t = Number((data?.value as { threshold?: unknown } | null)?.threshold);
+  return Number.isFinite(t) ? clampThreshold(t) : FACE_MATCH_THRESHOLD;
+}
+
+export async function setFaceThreshold(t: number) {
+  const value = clampThreshold(t);
+  const { error } = await supabaseAdmin
+    .from("app_setting")
+    .upsert(
+      { key: FACE_THRESHOLD_KEY, value: { threshold: value }, public_visible: false },
+      { onConflict: "key" },
+    );
+  if (error) throw new Error(error.message);
+  return value;
+}
 
 export async function getFaceTemplate(userId: string): Promise<FaceTemplate | null> {
   const { data } = await supabaseAdmin
@@ -48,12 +91,11 @@ export async function enrollFace(opts: {
   if (worst < 35)
     throw new Error("Kualitas foto terlalu rendah. Pastikan pencahayaan cukup dan wajah jelas.");
   const vectors = opts.photos.map((p) => extractFaceEmbedding(p));
-  // Sampel harus berasal dari orang yang sama — konsistensi antar-sampel.
   for (let i = 1; i < vectors.length; i++) {
-    if (cosineSimilarity(vectors[0], vectors[i]) < 0.6)
+    if (cosineSimilarity(vectors[0], vectors[i]) < 0.55)
       throw new Error("Sampel wajah tidak konsisten. Ulangi perekaman dengan latar yang sama.");
   }
-  const embedding = averageEmbeddings(vectors);
+  const embedding = pack(averageEmbeddings(vectors), vectors);
   const avgQuality = Math.round(qualities.reduce((a, b) => a + b, 0) / qualities.length);
   const { error } = await supabaseAdmin.from("asn_face_template").upsert(
     {
@@ -74,28 +116,42 @@ export async function enrollFace(opts: {
 }
 
 /**
- * Cocokkan foto selfie absensi dengan template di database (server-side).
- * Bila keyakinan tinggi, template diperbarui bertahap (EMA) agar mengikuti
- * perubahan wajar wajah ASN.
+ * Cocokkan selfie dengan template multi-pose: skor = kemiripan tertinggi
+ * terhadap rata-rata atau salah satu pose. Bila sangat yakin, rata-rata dan
+ * pose terdekat diperbarui bertahap (EMA 0.90/0.10).
  */
 export async function verifyFace(userId: string, photo: string) {
+  const threshold = await getFaceThreshold();
   const tpl = await getFaceTemplate(userId);
-  if (!tpl) return { enrolled: false, verified: false, score: null as number | null };
+  if (!tpl)
+    return { enrolled: false, verified: false, score: null as number | null, threshold, outdated: false };
+  const t = unpack(tpl.embedding);
+  if (!t) return { enrolled: true, verified: false, score: 0, threshold, outdated: true };
   const fresh = extractFaceEmbedding(photo);
-  const score = cosineSimilarity(tpl.embedding, fresh);
-  const verified = score >= FACE_MATCH_THRESHOLD;
-  if (verified && score >= FACE_ADAPT_THRESHOLD) {
-    const next = adaptEmbedding(tpl.embedding, fresh);
+  const avgScore = cosineSimilarity(t.avg, fresh);
+  let best = -1;
+  let bestScore = -1;
+  t.poses.forEach((p, i) => {
+    const sc = cosineSimilarity(p, fresh);
+    if (sc > bestScore) {
+      bestScore = sc;
+      best = i;
+    }
+  });
+  const score = Math.max(avgScore, bestScore);
+  const verified = score >= threshold;
+  if (verified && score >= Math.min(0.98, threshold + FACE_ADAPT_MARGIN)) {
+    const poses = t.poses.map((p, i) => (i === best ? adaptEmbedding(p, fresh) : p));
     await supabaseAdmin
       .from("asn_face_template")
       .update({
-        embedding: next,
+        embedding: pack(adaptEmbedding(t.avg, fresh), poses),
         adapt_count: tpl.adapt_count + 1,
         updated_at: new Date().toISOString(),
       })
       .eq("id", tpl.id);
   }
-  return { enrolled: true, verified, score: Number(score.toFixed(4)) };
+  return { enrolled: true, verified, score: Number(score.toFixed(4)), threshold, outdated: false };
 }
 
 /** Apakah ASN punya penugasan WFA aktif hari ini. */
