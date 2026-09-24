@@ -6,9 +6,9 @@ import jpeg from "jpeg-js";
 
 export const FACE_DIM = 192;
 /** Ambang minimal kecocokan wajah agar absensi diterima. */
-export const FACE_MATCH_THRESHOLD = 0.86;
+export const FACE_MATCH_THRESHOLD = 0.78;
 /** Ambang keyakinan tinggi — template diperbarui bertahap (EMA). */
-export const FACE_ADAPT_THRESHOLD = 0.93;
+export const FACE_ADAPT_THRESHOLD = 0.88;
 /** Bobot sampel baru saat penyesuaian bertahap. */
 export const FACE_ADAPT_ALPHA = 0.1;
 
