@@ -8,6 +8,7 @@ import { submitAbsensi, listAbsensiSelf } from "@/lib/asn.functions";
 import { resolveMySchedule } from "@/lib/asn-advanced.functions";
 import { startAuthentication } from "@simplewebauthn/browser";
 import { startBiometricAssertion } from "@/lib/asn-biometric.functions";
+import { myFaceStatus } from "@/lib/asn-face.functions";
 import { BiometricEnrollCard, useBiometricStatus } from "@/components/asn/BiometricEnrollCard";
 
 export const Route = createFileRoute("/_authenticated/asn/absensi")({
@@ -21,7 +22,24 @@ type Row = {
   id: string;
   tipe: "masuk" | "pulang";
   waktu: string;
+  mode?: string | null;
+  wfa_reason?: string | null;
+  face_verified?: boolean | null;
+  biometric_verified?: boolean | null;
   opd: { nama: string; singkatan: string } | null;
+};
+
+type FaceStatus = {
+  enrolled: boolean;
+  samples: number;
+  min: number;
+  wfa: {
+    id: string;
+    mulai: string;
+    selesai: string;
+    alasan: string | null;
+    nomor_surat: string | null;
+  } | null;
 };
 
 function AbsensiPage() {
@@ -33,6 +51,8 @@ function AbsensiPage() {
   const [scanned, setScanned] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [tipe, setTipe] = useState<"masuk" | "pulang">("masuk");
+  const [mode, setMode] = useState<"wfo" | "wfa">("wfo");
+  const [face, setFace] = useState<FaceStatus | null>(null);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [gpsError, setGpsError] = useState<string | null>(null);
   const [requestingGps, setRequestingGps] = useState(false);
@@ -131,6 +151,14 @@ function AbsensiPage() {
       .catch(() => setSchedule(null));
   }, [user, isAsn]);
 
+  // Status rekaman wajah & penugasan luar kantor yang aktif hari ini.
+  useEffect(() => {
+    if (!user || !isAsn) return;
+    (myFaceStatus() as unknown as Promise<FaceStatus>)
+      .then((r) => setFace(r))
+      .catch(() => setFace(null));
+  }, [user, isAsn]);
+
   // Token dari deep-link /asn/scan/$token
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -193,11 +221,19 @@ function AbsensiPage() {
     }
   }
 
-  async function submit(token: string) {
+  async function submit(token: string | null) {
     if (busy) return;
     if (!coords) {
       toast.error("GPS wajib aktif untuk absen.");
       requestGps();
+      return;
+    }
+    if (mode === "wfa" && !face?.wfa) {
+      toast.error("Belum ada penugasan luar kantor yang aktif hari ini. Hubungi Admin OPD.");
+      return;
+    }
+    if (mode === "wfa" && !face?.enrolled) {
+      toast.error("Absen dari luar kantor memerlukan rekaman wajah. Temui Admin OPD.");
       return;
     }
     setBusy(true);
@@ -220,6 +256,7 @@ function AbsensiPage() {
       await submitAbsensi({
         data: {
           token,
+          mode,
           tipe,
           lat: coords.lat,
           lng: coords.lng,
@@ -281,10 +318,10 @@ function AbsensiPage() {
       <section className="container-page py-8">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="font-display text-2xl font-bold">Absensi ASN (QR Kantor)</h1>
+            <h1 className="font-display text-2xl font-bold">Absensi ASN</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              Pilih tipe absen lalu scan QR. GPS, foto wajah, dan sidik jari perangkat (bila sudah
-              didaftarkan) wajib untuk mencegah titip absen.
+              Pilih lokasi kerja dan tipe absen. GPS, foto wajah, dan sidik jari perangkat (bila
+              sudah didaftarkan) wajib untuk mencegah titip absen.
             </p>
           </div>
           <Link
@@ -341,23 +378,91 @@ function AbsensiPage() {
           </div>
         )}
 
-        <div className="mt-4 inline-flex rounded-lg border border-border bg-surface p-1">
-          {(["masuk", "pulang"] as const).map((t) => (
-            <button
-              key={t}
-              onClick={() => setTipe(t)}
-              className={`h-9 px-4 rounded-md text-sm font-semibold ${tipe === t ? "bg-gradient-primary text-primary-foreground" : "text-muted-foreground"}`}
-            >
-              {t === "masuk" ? "Absen Masuk" : "Absen Pulang"}
-            </button>
-          ))}
+        <div className="mt-4 flex flex-wrap gap-2">
+          <div className="inline-flex rounded-lg border border-border bg-surface p-1">
+            {(
+              [
+                { k: "wfo", label: "Di Kantor" },
+                { k: "wfa", label: "Luar Kantor" },
+              ] as const
+            ).map((m) => (
+              <button
+                key={m.k}
+                onClick={() => {
+                  setMode(m.k);
+                  setScanned(null);
+                }}
+                className={`h-9 rounded-md px-4 text-sm font-semibold ${mode === m.k ? "bg-gradient-primary text-primary-foreground" : "text-muted-foreground"}`}
+              >
+                {m.label}
+              </button>
+            ))}
+          </div>
+          <div className="inline-flex rounded-lg border border-border bg-surface p-1">
+            {(["masuk", "pulang"] as const).map((t) => (
+              <button
+                key={t}
+                onClick={() => setTipe(t)}
+                className={`h-9 px-4 rounded-md text-sm font-semibold ${tipe === t ? "bg-gradient-primary text-primary-foreground" : "text-muted-foreground"}`}
+              >
+                {t === "masuk" ? "Absen Masuk" : "Absen Pulang"}
+              </button>
+            ))}
+          </div>
         </div>
+
+        {mode === "wfa" && (
+          <div
+            className={`mt-3 rounded-lg border p-3 text-sm ${face?.wfa ? "border-success/40 bg-success/10" : "border-warning/50 bg-warning/10"}`}
+          >
+            {face?.wfa ? (
+              <>
+                <div className="font-semibold text-success">Penugasan luar kantor aktif</div>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  {face.wfa.nomor_surat ? `${face.wfa.nomor_surat} · ` : ""}
+                  {face.wfa.alasan ?? "Penugasan luar kantor"} · berlaku {face.wfa.mulai} s.d.{" "}
+                  {face.wfa.selesai}
+                </p>
+                {!face.enrolled && (
+                  <p className="mt-1 text-xs font-semibold text-warning">
+                    Wajah Anda belum direkam. Temui Admin OPD agar absen luar kantor dapat
+                    diverifikasi.
+                  </p>
+                )}
+              </>
+            ) : (
+              <>
+                <div className="font-semibold text-warning">
+                  Belum ada penugasan luar kantor hari ini
+                </div>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  Absen dari luar kantor hanya bisa dilakukan bila Admin OPD atau BKPSDM sudah
+                  memberikan surat penugasan.
+                </p>
+              </>
+            )}
+          </div>
+        )}
 
         <div className="mt-4 grid gap-6 md:grid-cols-2">
           <div>
             {!gpsReady ? (
               <div className="rounded-xl border border-dashed border-border bg-card p-6 text-center text-sm text-muted-foreground">
-                Aktifkan GPS terlebih dahulu untuk mulai memindai QR.
+                Aktifkan GPS terlebih dahulu untuk mulai absen.
+              </div>
+            ) : mode === "wfa" ? (
+              <div className="rounded-xl border border-border bg-card p-4">
+                <div className="text-sm">
+                  Absen <b>{tipe}</b> dari luar kantor. Wajah Anda akan dicocokkan dengan rekaman di
+                  server, lokasi tetap dicatat untuk audit.
+                </div>
+                <button
+                  disabled={busy || !face?.wfa || !face?.enrolled}
+                  onClick={() => submit(null)}
+                  className="mt-3 h-10 w-full rounded-md bg-gradient-primary px-4 text-sm font-semibold text-primary-foreground disabled:opacity-60 sm:w-auto"
+                >
+                  {busy ? "Memproses…" : "Kirim Absen Luar Kantor"}
+                </button>
               </div>
             ) : !scanned ? (
               <QrScanner onResult={handleScan} />
@@ -408,6 +513,19 @@ function AbsensiPage() {
                     >
                       {r.tipe.toUpperCase()}
                     </span>
+                    <span className="ml-2 inline-block rounded bg-muted px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                      {r.mode === "wfa" ? "LUAR KANTOR" : "DI KANTOR"}
+                    </span>
+                    {r.face_verified && (
+                      <span className="ml-1 inline-block rounded bg-success/15 px-1.5 py-0.5 text-[10px] font-semibold text-success">
+                        WAJAH
+                      </span>
+                    )}
+                    {r.biometric_verified && (
+                      <span className="ml-1 inline-block rounded bg-success/15 px-1.5 py-0.5 text-[10px] font-semibold text-success">
+                        SIDIK JARI
+                      </span>
+                    )}
                     <span className="ml-2 text-muted-foreground">{r.opd?.singkatan ?? ""}</span>
                   </div>
                   <div className="text-xs text-muted-foreground">

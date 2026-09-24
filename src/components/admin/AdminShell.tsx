@@ -61,7 +61,7 @@ const baseNav: NavItem[] = [
   { to: "/admin/layanan/disposisi-inbox", label: "Inbox Disposisi", icon: Inbox },
   { to: "/admin/izin", label: "Persetujuan Izin/Cuti", icon: ListChecks },
   { to: "/admin/lembur", label: "Persetujuan Lembur", icon: FileClock },
-  { to: "/admin/asn-biometrik", label: "Sidik Jari ASN", icon: ScanLine },
+  { to: "/admin/asn-biometrik", label: "Biometrik & Penugasan ASN", icon: ScanLine },
   { to: "/admin/aset", label: "Aset OPD", icon: Boxes },
   { to: "/admin/aset-extra", label: "Mutasi & Pemeliharaan", icon: ListChecks },
   { to: "/admin/pengumuman", label: "Pengumuman", icon: Megaphone },
@@ -178,7 +178,7 @@ const superNavGroups: NavGroup[] = [
     items: [
       { to: "/admin/asn", label: "Data ASN", icon: Users },
       { to: "/admin/asn-kepatuhan", label: "Kepatuhan Kehadiran", icon: FileClock },
-      { to: "/admin/asn-biometrik", label: "Sidik Jari ASN", icon: ScanLine },
+      { to: "/admin/asn-biometrik", label: "Biometrik & Penugasan ASN", icon: ScanLine },
       { to: "/admin/izin", label: "Persetujuan Izin/Cuti", icon: ListChecks },
       { to: "/admin/lembur", label: "Persetujuan Lembur", icon: FileClock },
       { to: "/admin/hari-libur", label: "Hari Libur", icon: FileClock },
