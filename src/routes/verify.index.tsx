@@ -5,8 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
 import { verifyBuktiByHash, verifyUploadedBukti } from "@/features/bukti-dokumen/functions";
-import { Header } from "@/components/site/Header";
-import { Footer } from "@/components/site/Footer";
+import { PageHero, PageShell } from "@/components/site/PageShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +20,10 @@ export const Route = createFileRoute("/verify/")({
         name: "description",
         content: "Verifikasi keaslian dokumen resmi dengan SHA-256 hash atau unggah PDF.",
       },
+      { property: "og:title", content: "Verifikasi Dokumen — Portal Buton Selatan" },
+      { property: "og:description", content: "Periksa keaslian dokumen resmi secara aman." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Page,
@@ -107,15 +110,10 @@ function Page() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
-      <main className="container mx-auto flex-1 space-y-6 py-8">
+    <PageShell>
+      <PageHero eyebrow="Layanan Keaslian" title="Verifikasi dokumen resmi." description="Pindai QR, masukkan hash, atau unggah PDF untuk memastikan dokumen tercatat pada registry pemerintah." />
+      <main className="container-page flex-1 space-y-6 py-12">
         <div className="mx-auto max-w-2xl space-y-4">
-          <h1 className="font-display text-2xl font-bold">Verifikasi Dokumen</h1>
-          <p className="text-sm text-muted-foreground">
-            Pastikan keaslian dokumen resmi dengan memasukkan SHA-256 hash atau
-            mengunggah PDF. Server yang menghitung hash — data client tidak dipercaya.
-          </p>
 
           <Card>
             <CardHeader>
@@ -231,7 +229,6 @@ function Page() {
           )}
         </div>
       </main>
-      <Footer />
-    </div>
+    </PageShell>
   );
 }

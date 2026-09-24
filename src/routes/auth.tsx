@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuthUser } from "@/lib/auth-context";
 import { PageShell } from "@/components/site/PageShell";
+import { BadgeCheck, FileText, ShieldCheck } from "lucide-react";
 import { fetchDesaList, type Desa } from "@/lib/site-settings";
 import { listOpdPublic } from "@/lib/registration.functions";
 import { POSITION_LABEL, type SystemPosition } from "@/features/rbac/constants";
@@ -76,6 +77,10 @@ export const Route = createFileRoute("/auth")({
           "Masuk atau daftar akun (warga, Admin Desa, Admin OPD, ASN) untuk layanan publik Kabupaten Buton Selatan.",
       },
       { name: "robots", content: "noindex" },
+      { property: "og:title", content: "Masuk / Daftar — Portal Buton Selatan" },
+      { property: "og:description", content: "Akses aman layanan publik Kabupaten Buton Selatan." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AuthPage,
@@ -292,8 +297,21 @@ function AuthPage() {
 
   return (
     <PageShell>
-      <section className="container-page py-16">
-        <div className="mx-auto max-w-xl rounded-xl border border-border bg-card p-6 shadow-soft">
+      <section className="container-page py-10 md:py-16">
+        <div className="mx-auto grid max-w-5xl overflow-hidden rounded-lg border border-border bg-card shadow-elevated lg:grid-cols-[.8fr_1.2fr]">
+          <aside className="hidden bg-public-hero p-10 text-primary-foreground lg:block">
+            <div className="public-eyebrow">Portal layanan terpadu</div>
+            <h2 className="mt-6 text-3xl font-bold">Satu akun untuk mengakses layanan pemerintah.</h2>
+            <p className="mt-4 text-sm leading-relaxed text-primary-foreground/70">Ajukan permohonan, pantau prosesnya, dan terima pembaruan dalam ruang digital yang aman.</p>
+            <div className="mt-10 space-y-5">
+              {[
+                { icon: FileText, title: "Permohonan terpusat", text: "Seluruh layanan dan riwayat dalam satu tempat." },
+                { icon: BadgeCheck, title: "Identitas terverifikasi", text: "Data akun dilindungi untuk mencegah penyalahgunaan." },
+                { icon: ShieldCheck, title: "Akses sesuai peran", text: "Warga dan aparatur mendapat ruang kerja yang tepat." },
+              ].map((item) => <div key={item.title} className="flex gap-3"><item.icon className="mt-0.5 h-5 w-5 shrink-0 text-public-highlight" /><div><h3 className="text-sm font-semibold">{item.title}</h3><p className="mt-1 text-xs leading-relaxed text-primary-foreground/60">{item.text}</p></div></div>)}
+            </div>
+          </aside>
+        <div className="p-6 sm:p-8 lg:p-10">
           <h1 className="font-display text-2xl font-bold text-foreground">
             {mode === "signin" && "Masuk Akun"}
             {mode === "signup" && "Daftar Akun Baru"}
@@ -321,7 +339,7 @@ function AuthPage() {
                     {ROLE_LABEL[r]}
                   </button>
                 ))}
-              </div>
+         </div></div>
               {roleTab !== "warga" && (
                 <p className="mt-2 rounded-md border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-xs text-amber-800 dark:text-amber-300">
                   Akun <b>{ROLE_LABEL[roleTab]}</b> memerlukan verifikasi Super Admin sebelum dapat
