@@ -6,8 +6,8 @@ import { useSiteBranding } from "@/lib/site-settings";
 export function Footer() {
   const b = useSiteBranding();
   return (
-    <footer className="mt-12 sm:mt-16 md:mt-20 border-t border-border bg-surface">
-      <div className="container-page grid gap-10 py-14 md:grid-cols-4">
+    <footer className="mt-12 border-t-4 border-public-highlight bg-public-hero text-primary-foreground sm:mt-16 md:mt-20">
+      <div className="container-page grid gap-10 py-12 md:grid-cols-4">
         <div className="md:col-span-2">
           <div className="flex items-center gap-3">
             <img
@@ -20,52 +20,52 @@ export function Footer() {
             />
             <div>
               <div className="font-display text-lg font-bold">{b.footer_org}</div>
-              <div className="text-xs text-muted-foreground">{b.footer_tagline}</div>
+               <div className="text-xs text-primary-foreground/65">{b.footer_tagline}</div>
             </div>
           </div>
-          <p className="mt-4 max-w-md text-sm text-muted-foreground">{b.footer_description}</p>
+           <p className="mt-4 max-w-md text-sm leading-relaxed text-primary-foreground/65">{b.footer_description}</p>
         </div>
 
         <div>
           <h4 className="text-sm font-semibold text-foreground">Tautan</h4>
-          <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+           <ul className="mt-4 space-y-2 text-sm text-primary-foreground/65">
             <li>
-              <Link to="/layanan" className="hover:text-primary">
+                 <Link to="/layanan" className="hover:text-primary-foreground">
                 Layanan Publik
               </Link>
             </li>
             <li>
-              <Link to="/data" className="hover:text-primary">
+               <Link to="/data" className="hover:text-primary-foreground">
                 Satu Data
               </Link>
             </li>
             <li>
-              <Link to="/berita" className="hover:text-primary">
+               <Link to="/berita" className="hover:text-primary-foreground">
                 Berita & Pengumuman
               </Link>
             </li>
             <li>
-              <Link to="/tentang" className="hover:text-primary">
+               <Link to="/tentang" className="hover:text-primary-foreground">
                 Profil Pemerintah
               </Link>
             </li>
             <li>
-              <Link to="/lapor" className="hover:text-primary">
+               <Link to="/lapor" className="hover:text-primary-foreground">
                 LAPOR! (Cek Status)
               </Link>
             </li>
             <li>
-              <Link to="/maklumat-pelayanan" className="hover:text-primary">
+               <Link to="/maklumat-pelayanan" className="hover:text-primary-foreground">
                 Maklumat Pelayanan
               </Link>
             </li>
             <li>
-              <Link to="/cek-permohonan" className="hover:text-primary">
+               <Link to="/cek-permohonan" className="hover:text-primary-foreground">
                 Cek Status Permohonan
               </Link>
             </li>
             <li>
-              <Link to="/statistik-layanan" className="hover:text-primary">
+               <Link to="/statistik-layanan" className="hover:text-primary-foreground">
                 Statistik Pelayanan
               </Link>
             </li>
@@ -74,24 +74,24 @@ export function Footer() {
 
         <div>
           <h4 className="text-sm font-semibold text-foreground">Kontak</h4>
-          <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
+           <ul className="mt-4 space-y-3 text-sm text-primary-foreground/65">
             <li className="flex gap-2">
-              <MapPin className="h-4 w-4 mt-0.5 text-primary" />
+               <MapPin className="h-4 w-4 mt-0.5 text-public-highlight" />
               <span>{b.footer_address}</span>
             </li>
             <li className="flex gap-2">
-              <Phone className="h-4 w-4 mt-0.5 text-primary" />
+               <Phone className="h-4 w-4 mt-0.5 text-public-highlight" />
               <span>{b.footer_phone}</span>
             </li>
             <li className="flex gap-2">
-              <Mail className="h-4 w-4 mt-0.5 text-primary" />
+               <Mail className="h-4 w-4 mt-0.5 text-public-highlight" />
               <span>{b.footer_email}</span>
             </li>
           </ul>
         </div>
       </div>
-      <div className="border-t border-border">
-        <div className="container-page py-5 text-center text-xs text-muted-foreground">
+       <div className="border-t border-primary-foreground/10">
+         <div className="container-page py-5 text-center text-xs text-primary-foreground/55">
           <span>
             © {new Date().getFullYear()} {b.footer_org}. Hak Cipta Dilindungi.
           </span>
