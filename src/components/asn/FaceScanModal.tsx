@@ -169,7 +169,7 @@ export function FaceScanModal({
               {/* Garis pemindai */}
               {(scanning || verifying) && (
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-full overflow-hidden">
-                  <div className="face-scan-line h-0.5 w-full bg-primary/90 shadow-[0_0_12px_2px_hsl(var(--primary))]" />
+                  <div className="face-scan-line h-0.5 w-full bg-primary/90" />
                 </div>
               )}
 

@@ -249,4 +249,17 @@
     overflow: auto;
     transform: translateZ(0);
   }
+
+  /* Garis pemindai wajah pada modal absensi ASN. */
+  @keyframes face-scan-sweep {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(100%); }
+  }
+  .face-scan-line {
+    box-shadow: 0 0 12px 2px var(--primary);
+    animation: face-scan-sweep 1.6s ease-in-out infinite alternate;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .face-scan-line { animation: none; }
+  }
 }
