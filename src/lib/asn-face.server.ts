@@ -1,4 +1,5 @@
 // Helper server-only untuk biometrik wajah terpusat & retensi foto absensi.
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import {
   adaptEmbedding,
   averageEmbeddings,
@@ -124,7 +125,13 @@ export async function verifyFace(userId: string, photo: string) {
   const threshold = await getFaceThreshold();
   const tpl = await getFaceTemplate(userId);
   if (!tpl)
-    return { enrolled: false, verified: false, score: null as number | null, threshold, outdated: false };
+    return {
+      enrolled: false,
+      verified: false,
+      score: null as number | null,
+      threshold,
+      outdated: false,
+    };
   const t = unpack(tpl.embedding);
   if (!t) return { enrolled: true, verified: false, score: 0, threshold, outdated: true };
   const fresh = extractFaceEmbedding(photo);

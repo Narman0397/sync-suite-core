@@ -98,17 +98,7 @@ export async function captureFaceCrop(
   out.height = FACE_CROP_SIZE;
   const ctx = out.getContext("2d");
   if (!ctx) return null;
-  ctx.drawImage(
-    frame,
-    box.x,
-    box.y,
-    box.width,
-    box.height,
-    0,
-    0,
-    FACE_CROP_SIZE,
-    FACE_CROP_SIZE,
-  );
+  ctx.drawImage(frame, box.x, box.y, box.width, box.height, 0, 0, FACE_CROP_SIZE, FACE_CROP_SIZE);
   return { dataUrl: out.toDataURL("image/jpeg", quality), detected: !!found };
 }
 
@@ -150,7 +140,9 @@ function analyze(canvas: HTMLCanvasElement): { sharp: number; bright: number } {
   return { sharp: sum2 / n - mean * mean, bright };
 }
 
-async function cropCanvas(video: HTMLVideoElement): Promise<{ canvas: HTMLCanvasElement; detected: boolean } | null> {
+async function cropCanvas(
+  video: HTMLVideoElement,
+): Promise<{ canvas: HTMLCanvasElement; detected: boolean } | null> {
   const vw = video.videoWidth;
   const vh = video.videoHeight;
   if (!vw || !vh) return null;
@@ -181,7 +173,8 @@ export async function captureBestFaceCrop(
   gapMs = 120,
   quality = 0.88,
 ): Promise<{ dataUrl: string; detected: boolean; bright: number } | null> {
-  let best: { canvas: HTMLCanvasElement; detected: boolean; score: number; bright: number } | null = null;
+  let best: { canvas: HTMLCanvasElement; detected: boolean; score: number; bright: number } | null =
+    null;
   for (let i = 0; i < frames; i++) {
     const c = await cropCanvas(video);
     if (c) {
@@ -193,7 +186,11 @@ export async function captureBestFaceCrop(
     if (i < frames - 1) await sleep(gapMs);
   }
   if (!best) return null;
-  return { dataUrl: best.canvas.toDataURL("image/jpeg", quality), detected: best.detected, bright: best.bright };
+  return {
+    dataUrl: best.canvas.toDataURL("image/jpeg", quality),
+    detected: best.detected,
+    bright: best.bright,
+  };
 }
 
 /** Kecerahan rata-rata interior wajah pada frame saat ini. */

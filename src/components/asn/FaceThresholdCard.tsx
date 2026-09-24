@@ -32,7 +32,9 @@ export function FaceThresholdCard() {
   async function save() {
     setSaving(true);
     try {
-      const r = (await setFaceThresholdSetting({ data: { threshold: val } })) as { threshold: number };
+      const r = (await setFaceThresholdSetting({ data: { threshold: val } })) as {
+        threshold: number;
+      };
       setS((p) => (p ? { ...p, threshold: r.threshold } : p));
       toast.success(`Ambang pencocokan wajah disimpan: ${Math.round(r.threshold * 100)}%`);
     } catch (e) {
