@@ -26,6 +26,8 @@ export const Route = createFileRoute("/cek-permohonan")({
         property: "og:description",
         content: "Lacak permohonan pelayanan publik Anda secara transparan.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: CekPage,
@@ -112,13 +114,13 @@ function CekPage() {
         </form>
 
         {notFound && (
-          <div className="mx-auto mt-6 max-w-xl rounded-xl border border-dashed border-border bg-card p-6 text-center text-sm text-muted-foreground">
+          <div className="public-panel mx-auto mt-6 max-w-xl border-dashed p-6 text-center text-sm text-muted-foreground">
             Permohonan tidak ditemukan. Pastikan kode dan 4 digit NIK benar.
           </div>
         )}
 
         {row && (
-          <article className="mx-auto mt-6 max-w-2xl space-y-5 rounded-2xl border border-border bg-card p-6 shadow-soft">
+          <article className="public-panel mx-auto mt-6 max-w-2xl space-y-5 border-t-4 border-t-primary p-6">
             <header>
               <p className="font-mono text-sm text-muted-foreground">{row.kode}</p>
               <h2 className="mt-1 font-display text-lg font-bold">{row.judul}</h2>

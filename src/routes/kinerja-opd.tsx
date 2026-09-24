@@ -51,6 +51,10 @@ export const Route = createFileRoute("/kinerja-opd")({
         content:
           "Dashboard publik kinerja setiap Organisasi Perangkat Daerah (OPD) dalam menangani permohonan layanan.",
       },
+      { property: "og:title", content: "Kinerja OPD — Pemerintah Kabupaten Buton Selatan" },
+      { property: "og:description", content: "Pantau kinerja pelayanan setiap Organisasi Perangkat Daerah secara transparan." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: KinerjaOpdPage,

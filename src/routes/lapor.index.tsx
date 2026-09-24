@@ -20,6 +20,8 @@ export const Route = createFileRoute("/lapor/")({
         property: "og:description",
         content: "Masukkan nomor tiket LAPOR-YYYY-XXXXXX untuk memantau tindak lanjut.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: LaporIndex,
