@@ -161,7 +161,7 @@ function KontakPage() {
       )}
 
       <section
-        className={`container-page py-14 ${!user && !loading ? "pointer-events-none opacity-50" : ""}`}
+        className={`container-page py-10 md:py-12 ${!user && !loading ? "pointer-events-none opacity-50" : ""}`}
       >
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="space-y-4">

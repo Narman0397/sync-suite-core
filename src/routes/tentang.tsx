@@ -45,7 +45,7 @@ function TentangPage() {
         description="Bekerja melayani 1,42 juta warga dengan tata kelola modern, transparan, dan berbasis data."
       />
 
-      <section className="container-page py-10 sm:py-14">
+      <section className="container-page py-10 sm:py-12">
         <div className="border-l-4 border-primary bg-surface p-5 sm:p-8 lg:p-10">
           <h2 className="text-xl sm:text-2xl font-bold">Struktur Pemerintahan</h2>
           <p className="mt-2 text-sm sm:text-base text-muted-foreground">
