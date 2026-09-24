@@ -89,8 +89,8 @@ function LaporIndex() {
                 placeholder="LAPOR-2026-000123"
                 className="flex-1 bg-transparent py-2.5 text-sm outline-none uppercase"
                 autoFocus
-              />
-         </div></div>
+               />
+             </div>
             <button
               type="submit"
               disabled={busy}
@@ -108,7 +108,7 @@ function LaporIndex() {
               Lihat semua laporan saya (perlu masuk) <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
-        </div>
+         </div></div>
       </section>
     </PageShell>
   );
