@@ -233,7 +233,7 @@ export const setFaceThresholdSetting = createServerFn({ method: "POST" })
       aksi: "update_face_threshold",
       entitas: "app_setting",
       entitas_id: "face_match_threshold",
-      detail: { threshold },
-    } as never);
+      data_sesudah: { threshold } as never,
+    });
     return { threshold };
   });
