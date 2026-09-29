@@ -6,8 +6,8 @@ import { useSiteBranding } from "@/lib/site-settings";
 export function Footer() {
   const b = useSiteBranding();
   return (
-    <footer className="mt-12 border-t-4 border-primary bg-surface text-foreground sm:mt-16 md:mt-20">
-      <div className="container-page grid gap-8 py-10 md:grid-cols-4 md:py-12">
+    <footer className="mt-12 border-t border-border bg-surface sm:mt-16 md:mt-20">
+      <div className="container-page grid gap-10 py-14 md:grid-cols-4">
         <div className="md:col-span-2">
           <div className="flex items-center gap-3">
             <img

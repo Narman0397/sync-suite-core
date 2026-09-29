@@ -44,7 +44,7 @@ function BeritaPage() {
         description="Sumber tunggal informasi terverifikasi dari seluruh OPD Pemerintah Kabupaten Buton Selatan."
       />
 
-      <section className="container-page py-10 md:py-12">
+      <section className="container-page py-14">
         {items.length === 0 && (
           <div className="public-panel border-t-4 border-t-primary p-12 text-center">
             <Calendar className="mx-auto h-10 w-10 text-primary" />

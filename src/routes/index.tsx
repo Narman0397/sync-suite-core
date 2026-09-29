@@ -119,7 +119,7 @@ function StatsGrid() {
   return (
     <>
       {stats.map((s) => (
-        <div key={s.label} className="border-l-2 border-public-highlight bg-primary-foreground/10 p-4 backdrop-blur-sm">
+        <div key={s.label} className="rounded-xl bg-primary-foreground/10 p-4">
           <div className="font-display text-2xl font-bold md:text-3xl">{s.value}</div>
           <div className="mt-1 text-xs text-white/80">{s.label}</div>
         </div>
@@ -196,7 +196,7 @@ function HomePage() {
     <PageShell>
       {/* HERO */}
       <section
-        className="home-hero relative min-h-[26rem] overflow-hidden bg-public-hero text-primary-foreground md:min-h-[28rem]"
+        className="relative overflow-hidden bg-gradient-hero text-primary-foreground"
         style={{ contain: "paint" }}
       >
         {branding.hero_bg_url ? (
@@ -219,39 +219,39 @@ function HomePage() {
             loading="eager"
             decoding="async"
             fetchPriority="high"
-            className="absolute inset-0 h-full w-full object-cover opacity-50"
+            className="absolute inset-0 h-full w-full object-cover opacity-20"
           />
         )}
         <div
-          className="absolute inset-0 bg-gradient-to-r from-public-hero via-public-hero/85 to-public-hero/30"
+          className="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent"
           aria-hidden
         />
-        <div className="container-page relative grid min-h-[26rem] content-center gap-6 py-10 md:min-h-[28rem] md:py-12 lg:grid-cols-12 lg:items-center lg:gap-8">
+        <div className="container-page relative grid gap-8 py-12 md:py-16 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-7">
-            <span className="inline-flex items-center gap-2 border-l-2 border-public-highlight pl-3 text-xs font-semibold uppercase tracking-wider text-primary-foreground/85">
+            <span className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/25 bg-primary-foreground/15 px-3 py-1 text-xs font-medium uppercase tracking-wider">
               <ShieldCheck className="h-3.5 w-3.5" /> {branding.hero_eyebrow}
             </span>
-             <h1 className="mt-5 max-w-3xl text-balance text-4xl font-bold leading-tight md:text-6xl">
+             <h1 className="mt-4 text-balance text-3xl font-bold leading-tight md:text-5xl">
               {branding.hero_title_line1}
               <br />
               {branding.hero_title_line2}
               <br />
-               <span className="text-public-highlight">{branding.hero_title_line3}</span>
+                <span className="text-gold">{branding.hero_title_line3}</span>
             </h1>
-             <p className="mt-5 max-w-xl text-base leading-relaxed text-primary-foreground/80 md:text-lg">
+             <p className="mt-4 max-w-xl text-sm text-primary-foreground/85 md:text-base">
               {branding.hero_subtitle}
             </p>
 
             <div className="mt-5 flex flex-wrap gap-2.5">
               <Link
                 to="/layanan"
-                 className="inline-flex h-11 items-center gap-2 rounded-md bg-primary-foreground px-5 text-sm font-semibold text-primary shadow-elevated hover:opacity-90"
+                 className="inline-flex h-11 items-center gap-2 rounded-md bg-primary-foreground px-5 text-sm font-semibold text-primary shadow-elevated hover:opacity-95"
               >
                 {branding.hero_btn_primary} <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 to="/data"
-                 className="inline-flex h-11 items-center gap-2 rounded-md border border-primary-foreground/30 bg-primary-foreground/10 px-5 text-sm font-semibold text-primary-foreground hover:bg-primary-foreground/20"
+                 className="inline-flex h-11 items-center gap-2 rounded-md border border-primary-foreground/30 bg-primary-foreground/15 px-5 text-sm font-semibold text-primary-foreground hover:bg-primary-foreground/25"
               >
                 {branding.hero_btn_secondary}
               </Link>
@@ -259,7 +259,7 @@ function HomePage() {
 
             <form
               onSubmit={submitSearch}
-              className="mt-7 flex max-w-xl items-center gap-2 rounded-md border border-primary-foreground/20 bg-background p-1.5 shadow-elevated"
+              className="mt-6 flex max-w-xl items-center gap-2 rounded-xl border border-primary-foreground/20 bg-primary-foreground/95 p-1.5 shadow-elevated"
             >
               <Search className="ml-2 h-5 w-5 text-muted-foreground" />
               <input
@@ -278,7 +278,7 @@ function HomePage() {
           </div>
 
           <div className="lg:col-span-5">
-             <div className="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-primary-foreground/20 bg-primary-foreground/20 shadow-elevated">
+             <div className="grid grid-cols-2 gap-3 rounded-2xl border border-primary-foreground/15 bg-primary-foreground/15 p-3">
               <Suspense fallback={null}>
                 <StatsGrid />
               </Suspense>
@@ -289,10 +289,10 @@ function HomePage() {
 
       {/* DIREKTORI OPD */}
       {showOpdDir && (
-         <section className="container-page py-10 md:py-12">
+         <section className="container-page py-10">
           <div className="flex items-end justify-between gap-4">
             <div>
-               <div className="public-section-kicker">
+               <div className="text-xs font-semibold uppercase tracking-widest text-accent">
                 {branding.direktori_eyebrow}
               </div>
               <h2 className="mt-1 text-2xl font-bold md:text-3xl">{branding.direktori_title}</h2>
@@ -322,14 +322,14 @@ function HomePage() {
       )}
 
       {/* PILAR */}
-       <section className="border-y border-border bg-surface py-10 md:py-12">
+        <section className="bg-surface py-10">
         <div className="container-page grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {[
             { icon: Database, title: branding.pilar_1_title, desc: branding.pilar_1_desc },
             { icon: Users, title: branding.pilar_2_title, desc: branding.pilar_2_desc },
             { icon: Megaphone, title: branding.pilar_3_title, desc: branding.pilar_3_desc },
           ].map((p) => (
-             <div key={p.title} className="rounded-md border border-border bg-card p-6 shadow-soft hover-lift">
+             <div key={p.title} className="rounded-xl border border-border bg-card p-4 shadow-soft">
               <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-primary text-primary-foreground">
                 <p.icon className="h-5 w-5" />
               </div>
@@ -341,8 +341,8 @@ function HomePage() {
       </section>
 
       {/* CTA */}
-       <section className="container-page py-10 md:py-12">
-         <div className="overflow-hidden rounded-md border-l-4 border-public-highlight bg-public-hero p-6 text-primary-foreground shadow-elevated md:p-10">
+        <section className="container-page py-10">
+         <div className="overflow-hidden rounded-2xl bg-gradient-primary p-6 text-primary-foreground shadow-elevated md:p-10">
           <div className="grid items-center gap-6 md:grid-cols-2">
             <div>
               <h2 className="text-2xl font-bold md:text-3xl">{branding.cta_title}</h2>
