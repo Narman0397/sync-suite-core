@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuthUser } from "@/lib/auth-context";
 import { PageShell } from "@/components/site/PageShell";
-import { BadgeCheck, FileText, ShieldCheck } from "lucide-react";
 import { fetchDesaList, type Desa } from "@/lib/site-settings";
 import { listOpdPublic } from "@/lib/registration.functions";
 import { POSITION_LABEL, type SystemPosition } from "@/features/rbac/constants";
@@ -297,21 +296,8 @@ function AuthPage() {
 
   return (
     <PageShell>
-      <section className="container-page py-10 md:py-12">
-        <div className="mx-auto grid max-w-5xl overflow-hidden rounded-lg border border-border bg-card shadow-elevated lg:grid-cols-[.8fr_1.2fr]">
-          <aside className="hidden bg-public-hero p-10 text-primary-foreground lg:block">
-            <div className="public-eyebrow">Portal layanan terpadu</div>
-            <h2 className="mt-6 text-3xl font-bold">Satu akun untuk mengakses layanan pemerintah.</h2>
-            <p className="mt-4 text-sm leading-relaxed text-primary-foreground/70">Ajukan permohonan, pantau prosesnya, dan terima pembaruan dalam ruang digital yang aman.</p>
-            <div className="mt-10 space-y-5">
-              {[
-                { icon: FileText, title: "Permohonan terpusat", text: "Seluruh layanan dan riwayat dalam satu tempat." },
-                { icon: BadgeCheck, title: "Identitas terverifikasi", text: "Data akun dilindungi untuk mencegah penyalahgunaan." },
-                { icon: ShieldCheck, title: "Akses sesuai peran", text: "Warga dan aparatur mendapat ruang kerja yang tepat." },
-              ].map((item) => <div key={item.title} className="flex gap-3"><item.icon className="mt-0.5 h-5 w-5 shrink-0 text-public-highlight" /><div><h3 className="text-sm font-semibold">{item.title}</h3><p className="mt-1 text-xs leading-relaxed text-primary-foreground/60">{item.text}</p></div></div>)}
-            </div>
-          </aside>
-        <div className="p-6 sm:p-8 lg:p-10">
+      <section className="container-page py-16">
+        <div className="mx-auto max-w-xl rounded-xl border border-border bg-card p-6 shadow-soft">
           <h1 className="font-display text-2xl font-bold text-foreground">
             {mode === "signin" && "Masuk Akun"}
             {mode === "signup" && "Daftar Akun Baru"}
@@ -597,7 +583,7 @@ function AuthPage() {
               ← Kembali ke Beranda
             </Link>
           </div>
-        </div></div>
+        </div>
       </section>
     </PageShell>
   );

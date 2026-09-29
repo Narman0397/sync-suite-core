@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { Search, Loader2, FileSearch, ShieldCheck, Clock3 } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { PageShell, PageHero } from "@/components/site/PageShell";
 import { PermohonanProgressBar } from "@/components/warga/PermohonanProgressBar";
@@ -65,22 +65,10 @@ function CekPage() {
         title="Cek Status Permohonan"
         description="Lacak permohonan pelayanan publik menggunakan kode + 4 digit terakhir NIK."
       />
-       <section className="container-page py-10 md:py-12">
-         <div className="mx-auto mb-8 grid max-w-4xl gap-4 sm:grid-cols-3">
-           {[
-             { icon: FileSearch, title: "Siapkan kode", text: "Gunakan kode yang diterima saat pengajuan." },
-             { icon: ShieldCheck, title: "Verifikasi aman", text: "Masukkan empat digit terakhir NIK Anda." },
-             { icon: Clock3, title: "Pantau proses", text: "Lihat tahapan dan riwayat terbaru permohonan." },
-           ].map((item) => (
-             <div key={item.title} className="public-panel flex gap-3 p-4">
-               <item.icon className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-               <div><h2 className="text-sm font-semibold">{item.title}</h2><p className="mt-1 text-xs leading-relaxed text-muted-foreground">{item.text}</p></div>
-             </div>
-           ))}
-         </div>
+       <section className="container-page py-10">
         <form
           onSubmit={onSubmit}
-          className="public-panel mx-auto grid max-w-xl gap-4 border-t-4 border-t-primary p-6 md:p-8"
+          className="mx-auto grid max-w-xl gap-4 rounded-2xl border border-border bg-card p-6 shadow-soft"
         >
           <div>
             <label className="text-sm font-medium">Kode Permohonan</label>
