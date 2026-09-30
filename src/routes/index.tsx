@@ -109,7 +109,7 @@ function StatsGrid() {
   const { data } = useSuspenseQuery(homeStatsQueryOptions());
   const stats = [
     { label: "Layanan Online", value: formatNumber(data.layananOnline) },
-    { label: "Permohonan/bulan", value: formatNumber(data.permohonanBulanIni) },
+    { label: "Permohonan / Bulan", value: formatNumber(data.permohonanBulanIni) },
     { label: "Dataset Terbuka", value: formatNumber(data.datasetTerbuka) },
     {
       label: "Kepuasan Warga",
@@ -265,7 +265,7 @@ function HomePage() {
               <input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="Cari layanan: KTP, IMB, beasiswa…"
+                placeholder="Cari layanan: KTP-el, PBG, akta kelahiran…"
                 className="flex-1 bg-transparent px-2 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground"
               />
               <button

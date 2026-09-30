@@ -144,7 +144,7 @@ function KontakPage() {
               <div className="flex-1">
                 <div className="font-semibold text-foreground">Masuk diperlukan</div>
                 <p className="mt-1 text-muted-foreground">
-                  Untuk mencegah penyalahgunaan, fitur LAPOR! kini hanya dapat digunakan oleh akun
+                  Untuk memastikan validitas laporan dan kemudahan pemantauan tindak lanjut, fitur LAPOR! digunakan melalui akun
                   warga yang sudah masuk.
                 </p>
                 <Link
@@ -169,9 +169,9 @@ function KontakPage() {
               {
                 icon: MapPin,
                 title: "Alamat",
-                value: "Balai Kota, Jl. Merdeka No. 1\nKabupaten Buton Selatan 16110",
+                value: "Kompleks Perkantoran Takawa, Batauga\nKabupaten Buton Selatan, Sulawesi Tenggara 93741",
               },
-              { icon: Phone, title: "Telepon", value: "(021) 555-0100\nHotline: 112" },
+              { icon: Phone, title: "Telepon", value: "(0402) 000-000\nHotline: 112" },
               {
                 icon: Mail,
                 title: "Email",

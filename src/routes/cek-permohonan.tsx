@@ -122,7 +122,7 @@ function CekPage() {
 
             {row.alasan_penolakan && (
               <div className="rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
-                <strong>Alasan penolakan:</strong> {row.alasan_penolakan}
+                <strong>Keterangan Petugas:</strong> {row.alasan_penolakan}
               </div>
             )}
 

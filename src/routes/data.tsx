@@ -24,7 +24,7 @@ export const Route = createFileRoute("/data")({
       { property: "og:title", content: "Satu Data Kabupaten Buton Selatan" },
       {
         property: "og:description",
-        content: "Visualisasi data publik dan kinerja pemerintah kota.",
+        content: "Visualisasi data publik dan kinerja pemerintah kabupaten.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

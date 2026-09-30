@@ -51,7 +51,7 @@ export function Footer() {
             </li>
             <li>
                <Link to="/lapor" className="hover:text-primary">
-                LAPOR! (Cek Status)
+                Lacak Laporan (LAPOR!)
               </Link>
             </li>
             <li>

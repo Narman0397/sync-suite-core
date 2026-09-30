@@ -97,7 +97,7 @@ export const DEFAULT_BRANDING: SiteBranding = {
     "Sampaikan langsung melalui kanal LAPOR! Setiap laporan dipantau dan ditindaklanjuti oleh OPD terkait.",
   cta_btn_primary: "Lapor Sekarang",
   cta_btn_secondary: "Tentang Pemerintah",
-  footer_org: "Pemerintah Kabupaten",
+  footer_org: "Pemerintah Kabupaten Buton Selatan",
   footer_tagline: "Melayani dengan integritas & data",
   footer_description:
     "Situs resmi pemusatan pelayanan publik dan data terintegrasi. Transparan, terpadu, dan dapat diakses kapan saja.",

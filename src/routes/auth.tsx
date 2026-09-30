@@ -224,7 +224,7 @@ function AuthPage() {
             redirectTo: `${window.location.origin}/reset-password`,
           })
           .catch(() => {});
-        toast.success("Jika email terdaftar, link reset password telah dikirim.");
+        toast.success("Jika email terdaftar, tautan pemulihan kata sandi telah dikirim.");
         setMode("signin");
         return;
       }
@@ -234,7 +234,7 @@ function AuthPage() {
       // Phase 4: enforce kebijakan password enterprise di sisi klien juga.
       if (!PASSWORD_RE.test(form.password))
         throw new Error(
-          "Password minimal 8 karakter dan harus memuat huruf besar, huruf kecil, dan angka.",
+          "Kata sandi minimal 8 karakter dan harus memuat huruf besar, huruf kecil, dan angka.",
         );
       if (!form.nama_lengkap.trim()) throw new Error("Nama lengkap wajib diisi");
       // Phase 3: email kini WAJIB (server juga menolak tanpa email).
