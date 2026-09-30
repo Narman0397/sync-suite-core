@@ -50,7 +50,7 @@ function BeritaPage() {
             <Calendar className="mx-auto h-10 w-10 text-primary" />
             <h2 className="mt-4 font-display text-xl font-bold">Belum ada berita yang terbit</h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Berita akan muncul di sini setelah Super Admin mempublikasikannya melalui CMS.
+              Belum ada berita atau pengumuman resmi yang dipublikasikan. Silakan periksa kembali secara berkala.
             </p>
           </div>
         )}

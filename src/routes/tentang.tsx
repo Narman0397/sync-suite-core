@@ -42,7 +42,7 @@ function TentangPage() {
       <PageHero
         eyebrow="Profil"
         title="Tentang Pemerintah Kabupaten Buton Selatan."
-        description="Bekerja melayani 1,42 juta warga dengan tata kelola modern, transparan, dan berbasis data."
+        description="Bekerja melayani masyarakat Kabupaten Buton Selatan dengan tata kelola modern, transparan, dan berbasis data."
       />
 
       <section className="container-page py-10 sm:py-14">
@@ -108,7 +108,7 @@ function TentangPage() {
             </div>
             <h3 className="mt-5 text-xl font-semibold">Visi</h3>
             <p className="mt-3 text-muted-foreground text-justify">
-              Mewujudkan Kabupaten Buton Selatan sebagai kota cerdas, inklusif, dan berkelanjutan
+              Mewujudkan Kabupaten Buton Selatan sebagai kabupaten cerdas, inklusif, dan berkelanjutan
               melalui pemerintahan yang melayani dan berbasis data.
             </p>
           </div>

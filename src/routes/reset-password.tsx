@@ -26,7 +26,7 @@ function ResetPasswordPage() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (pw.length < 6) return toast.error("Password minimal 6 karakter");
+    if (pw.length < 6) return toast.error("Kata sandi minimal 6 karakter");
     setBusy(true);
     const { error } = await supabase.auth.updateUser({ password: pw });
     setBusy(false);
