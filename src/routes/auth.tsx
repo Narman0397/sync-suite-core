@@ -301,10 +301,10 @@ function AuthPage() {
           <h1 className="font-display text-2xl font-bold text-foreground">
             {mode === "signin" && "Masuk Akun"}
             {mode === "signup" && "Daftar Akun Baru"}
-            {mode === "forgot" && "Reset Password"}
+            {mode === "forgot" && "Pulihkan Kata Sandi"}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Portal layanan Kabupaten Buton Selatan. Login menggunakan <b>username</b> + password.
+            Portal layanan Kabupaten Buton Selatan. Masuk menggunakan <b>nama pengguna (username)</b> dan <b>kata sandi</b>.
           </p>
 
           {showSignupExtras && (
