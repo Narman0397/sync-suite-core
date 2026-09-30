@@ -169,7 +169,7 @@ function KontakPage() {
               {
                 icon: MapPin,
                 title: "Alamat",
-                value: "Kompleks Perkantoran Takawa, Batauga\nKabupaten Buton Selatan, Sulawesi Tenggara 93741",
+                value: "Kompleks Perkantoran Laompo, Batauga\nKabupaten Buton Selatan, Sulawesi Tenggara 93741",
               },
               { icon: Phone, title: "Telepon", value: "(0402) 000-000\nHotline: 112" },
               {
